@@ -6,6 +6,10 @@ const taskInitialState = {
   name: String(),
   timestamp: +new Date(),
   isActive: Boolean(),
+  periods: [
+    { startTime: +new Date(), endTime: +new Date() },
+    { startTime: +new Date(), endTime: null },
+  ],
 };
 
 export const useStore = create((set, get) => ({
@@ -17,11 +21,13 @@ export const useStore = create((set, get) => ({
           ...i,
           isActive: false,
         }));
+        const timestamp = givenData.timestamp ?? taskInitialState.timestamp;
         const newTask = {
           id: givenData.id ?? nanoid(10),
           name: givenData.name ?? taskInitialState.name,
-          timestamp: givenData.timestamp ?? taskInitialState.timestamp,
+          timestamp,
           isActive: givenData.isActive ?? taskInitialState.isActive,
+          periods: [{ startTime: timestamp, endTime: null }],
         };
         return {
           tasks: { ...state.tasks, tasksArr: [...oldTasks, newTask] },
@@ -35,11 +41,31 @@ export const useStore = create((set, get) => ({
         return {
           tasks: {
             ...state.tasks,
-            tasksArr: get().tasks.tasksArr.map((i) =>
-              i.id === id
-                ? { ...i, isActive: !isNowActive }
-                : { ...i, isActive: false },
-            ),
+            tasksArr: get().tasks.tasksArr.map((i) => {
+              if (i.id === id) {
+                if (isNowActive) {
+                  const lastStartTime =
+                    i.periods[i.periods.length - 1].startTime;
+                  return {
+                    ...i,
+                    isActive: false,
+                    periods: [
+                      ...i.periods.slice(0, -1),
+                      { startTime: lastStartTime, endTime: +new Date() },
+                    ],
+                  };
+                }
+                return {
+                  ...i,
+                  isActive: true,
+                  periods: [
+                    ...i.periods,
+                    { startTime: +new Date(), endTime: null },
+                  ],
+                };
+              }
+              return { ...i, isActive: false };
+            }),
           },
         };
       }),
