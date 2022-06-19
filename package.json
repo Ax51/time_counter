@@ -10,8 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/material": "^5.8.4",
+    "nanoid": "^4.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-icons": "^4.4.0",
+    "vite-plugin-eslint": "^1.6.1",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
