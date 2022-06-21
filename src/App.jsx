@@ -1,48 +1,27 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React from "react";
+import { Grid, Box } from "@mui/material";
+import { useStore } from "./store/store";
+import SetupTask from "./components/SetupTask";
+import RenderTask from "./components/RenderTask";
+import Snackbar from "./utils/Snackbar";
 
-function App() {
-  const [count, setCount] = useState(0);
+export default function App() {
+  const tasks = useStore((state) => state.tasks.tasksArr);
+  const activeTasks = tasks.filter((i) => !i.isArchived);
+  const showActiveOnly = useStore((state) => state.tasks.isActiveOnly);
+  const renderTasksArr = showActiveOnly ? activeTasks : tasks;
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button
-            type="button"
-            onClick={() => setCount((prevState) => prevState + 1)}
-          >
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+    <Box sx={{ width: "100vw", minHeight: "100vh", bgcolor: "grey.100" }}>
+      <Box sx={{ p: 2 }}>
+        <SetupTask />
+        <Grid container spacing={2}>
+          {renderTasksArr.map((i) => (
+            <RenderTask key={i.id} task={i} />
+          ))}
+        </Grid>
+      </Box>
+      <Snackbar />
+    </Box>
   );
 }
-
-export default App;

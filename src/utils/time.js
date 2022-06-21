@@ -31,10 +31,10 @@ export const stringToMs = {
 };
 
 export function relativeToHumanTime(ms) {
-  const seconds = Math.floor((ms % stringToMs.minute) / stringToMs.second);
-  const minutes = Math.floor((ms % stringToMs.hour) / stringToMs.minute);
-  const hours = Math.floor((ms % stringToMs.day) / stringToMs.hour);
   const days = Math.floor(ms / stringToMs.day);
+  const hours = Math.floor((ms % stringToMs.day) / stringToMs.hour);
+  const minutes = Math.floor((ms % stringToMs.hour) / stringToMs.minute);
+  const seconds = Math.floor((ms % stringToMs.minute) / stringToMs.second);
 
   function addZero(num) {
     return +num === 0 ? "00" : +num > 9 ? num.toString() : `0${num}`;
@@ -46,4 +46,8 @@ export function relativeToHumanTime(ms) {
     minutes: addZero(minutes, "minute"),
     seconds: addZero(seconds, "second"),
   };
+}
+
+export function msTimeSpent(ms) {
+  return +new Date() - ms;
 }

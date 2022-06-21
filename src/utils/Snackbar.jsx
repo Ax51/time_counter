@@ -1,6 +1,6 @@
 import React from "react";
 import { Alert, Snackbar } from "@mui/material";
-import { useStore } from "../store";
+import { useStore } from "../store/store";
 
 export default function App() {
   const { open, message, severity, button, anchorOrigin } = useStore(
