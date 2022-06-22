@@ -8,8 +8,10 @@ import Snackbar from "./utils/Snackbar";
 export default function App() {
   const tasks = useStore((state) => state.tasks.tasksArr);
   const activeTasks = tasks.filter((i) => !i.isArchived);
-  const showActiveOnly = useStore((state) => state.tasks.isActiveOnly);
+  const showActiveOnly = useStore((state) => state.tasks.showActiveOnly);
   const renderTasksArr = showActiveOnly ? activeTasks : tasks;
+
+  console.log("all tasks:", tasks);
 
   return (
     <Box sx={{ width: "100vw", minHeight: "100vh", bgcolor: "grey.100" }}>

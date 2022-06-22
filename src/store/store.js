@@ -17,17 +17,16 @@ const taskInitialState = {
 };
 
 // TODO: add zustand lens to separate stores
-// TODO: add deepMerge function to proper persist merge
 
 export const useStore = create(
   persist(
     (set, get) => ({
       tasks: {
         tasksArr: [],
-        isActiveOnly: true,
-        toggleActiveOnly: () =>
+        showActiveOnly: true,
+        toggleShowActiveOnly: () =>
           set((state) => ({
-            tasks: { ...state.tasks, isActiveOnly: !state.tasks.isActiveOnly },
+            tasks: { ...state.tasks, showActiveOnly: !state.tasks.showActiveOnly },
           })),
         addTask: (givenData) =>
           set((state) => {
@@ -135,6 +134,45 @@ export const useStore = create(
                   }
                   : i,
               ),
+            },
+          })),
+        unarchiveTask: (id) =>
+          set((state) => ({
+            tasks: {
+              ...state.tasks,
+              showActiveOnly: true,
+              tasksArr: state.tasks.tasksArr.map((i) => {
+                const isTaskRunning = i.periods[i.periods.length - 1].endTime === null;
+                const lastStartTime = i.periods[i.periods.length - 1].startTime;
+                if (isTaskRunning) {
+                  return {
+                    ...i,
+                    isActive: false,
+                    periods: [
+                      ...i.periods.slice(0, -1),
+                      {
+                        startTime: lastStartTime,
+                        endTime: +new Date(),
+                      },
+                    ]
+                  }
+                }
+                if (i.id === id) {
+                  return {
+                    ...i,
+                    isArchived: false,
+                    periods: [
+                      ...i.periods,
+                      {
+                        startTime: +new Date(),
+                        endTime: null,
+                      },
+                    ],
+                    isActive: true,
+                  }
+                }
+                return i
+              }),
             },
           })),
       },

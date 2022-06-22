@@ -41,10 +41,10 @@ export function relativeToHumanTime(ms) {
   }
 
   return {
-    days: addZero(days, "day"),
-    hours: addZero(hours, "hour"),
-    minutes: addZero(minutes, "minute"),
-    seconds: addZero(seconds, "second"),
+    days: addZero(days),
+    hours: addZero(hours),
+    minutes: addZero(minutes),
+    seconds: addZero(seconds),
   };
 }
 

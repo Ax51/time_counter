@@ -23,8 +23,10 @@ export default function SetupTask() {
   const addTask = useStore((state) => state.tasks.addTask);
   const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
   const [inputText, setInputText] = useState("");
-  const isActiveOnly = useStore((state) => state.tasks.isActiveOnly);
-  const toggleActiveOnly = useStore((state) => state.tasks.toggleActiveOnly);
+  const isActiveOnly = useStore((state) => state.tasks.showActiveOnly);
+  const toggleActiveOnly = useStore(
+    (state) => state.tasks.toggleShowActiveOnly,
+  );
 
   function resetInput() {
     setInputText("");
@@ -35,7 +37,11 @@ export default function SetupTask() {
 
   function handleStart() {
     if (inputText) {
-      addTask({ name: inputText, timestamp: +new Date(), isActive: true });
+      addTask({
+        name: inputText,
+        timestamp: +new Date(),
+        isActive: true,
+      });
       resetInput();
       openSnackbar({ text: "Task started successfully" });
     } else {
