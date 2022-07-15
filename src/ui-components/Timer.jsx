@@ -1,12 +1,35 @@
 import React, { useRef, useReducer, useEffect } from "react";
 import { Typography, Grid } from "@mui/material";
 import { relativeToHumanTime } from "../utils/time";
+import timeRender from "./TimeRender";
 
-export default function Timer({ ms, isActive, lastTimeActive }) {
+export default function Timer({ ms, name, isActive, lastTimeActive }) {
   const msTimeLeft = lastTimeActive ? lastTimeActive - ms : +new Date() - ms;
   const { days, hours, minutes, seconds } = relativeToHumanTime(msTimeLeft);
   const forceUpdate = useReducer((state) => state + 1, 0)[1];
   const timerIdRef = useRef(null);
+  const titleStoreRef = useRef(document.title);
+
+  function changeTitle(newTitle) {
+    if (newTitle) {
+      document.title = newTitle;
+    } else {
+      document.title = titleStoreRef.current;
+    }
+  }
+
+  useEffect(() => {
+    if (isActive) {
+      const nameForTitle = name.slice(0, 7);
+      changeTitle(
+        +hours
+          ? `${hours}:${minutes} - ${nameForTitle}`
+          : `${minutes}:${seconds} - ${nameForTitle}`,
+      );
+    } else {
+      changeTitle();
+    }
+  });
 
   useEffect(() => {
     if (isActive) {
@@ -23,13 +46,7 @@ export default function Timer({ ms, isActive, lastTimeActive }) {
     <Grid>
       {isActive ? (
         <Typography>
-          {!!+days && ` ${days} Days,`}
-          {!!+hours && ` ${hours} hr,`}
-          {!!+minutes && ` ${minutes} min,`}
-          {seconds && ` ${seconds} sec`}
-          {/* {+daysLeft > 0
-              ? `${daysLeft} Days, ${hoursLeft}:${minsLeft}:${secsLeft}`
-              : `${hoursLeft}:${minsLeft}:${secsLeft}`} */}
+          {timeRender({ days, hours, minutes, seconds }, "fullStr")}
         </Typography>
       ) : (
         <Typography sx={{ color: "text.disabled" }}>00 sec</Typography>
