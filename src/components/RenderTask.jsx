@@ -6,13 +6,15 @@ import {
   Typography,
   IconButton,
   Input,
+  Divider,
 } from "@mui/material";
 import {
   BsFillPlayCircleFill,
   BsFillPauseCircleFill,
   BsStopCircleFill,
 } from "react-icons/bs";
-import Timer from "./Timer";
+import Timer from "../ui-components/Timer";
+import timeRender from "../ui-components/TimeRender";
 import { relativeToHumanTime } from "../utils/time";
 import { useStore } from "../store/store";
 
@@ -29,6 +31,14 @@ export default function RenderTask({
 
   const { startTime: ms, endTime: lastTimeActive } =
     periods[periods.length - 1];
+
+  const endedPeriods = periods.filter((i) => i.endTime);
+  const totalSpent =
+    endedPeriods.length > 0
+      ? endedPeriods
+          .map((i) => i.endTime - i.startTime)
+          .reduce((prev, cur) => prev + cur, 0)
+      : 0;
 
   function saveNewName() {
     renameTask(id, temporaryName);
@@ -67,6 +77,7 @@ export default function RenderTask({
             {/* TODO: make switch between showing last timer and summary timer */}
             <Timer
               ms={ms}
+              name={name}
               isActive={isActive}
               lastTimeActive={lastTimeActive}
             />
@@ -93,19 +104,21 @@ export default function RenderTask({
             .reverse()
             .map(({ startTime, endTime }, k) => {
               const relativeTimeSpent = endTime - startTime;
-              const { days, hours, minutes, seconds } =
-                relativeToHumanTime(relativeTimeSpent);
+              const timeData = relativeToHumanTime(relativeTimeSpent);
               return (
                 <Typography key={startTime}>
                   {`${k + 1})`}
-                  {!!+days && ` ${days} D.`}
-                  {!!+hours && ` ${hours} hr`}
-                  {!!+minutes && ` ${minutes} min`}
-                  {seconds && ` ${seconds} sec`}
-                  {/* {`${k + 1}) ${hours}:${minutes}:${seconds}`} */}
+                  {timeRender(timeData, "fullStr")}
                 </Typography>
               );
             })}
+          {!isActive && (
+            <>
+              <Divider sx={{ my: 1 }} />
+              Total: {timeRender(relativeToHumanTime(totalSpent), "extendStr")}
+            </>
+          )}
+          <Divider sx={{ my: 1 }} />
           <button type="button" onClick={() => archiveTask(id)}>
             archive
           </button>
