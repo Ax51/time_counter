@@ -1,5 +1,12 @@
-import React from "react";
-import { Grid, Card, CardContent, Typography, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  IconButton,
+  Input,
+} from "@mui/material";
 import {
   BsFillPlayCircleFill,
   BsFillPauseCircleFill,
@@ -15,17 +22,47 @@ export default function RenderTask({
   const pauseTask = useStore((state) => state.tasks.pauseTask);
   const archiveTask = useStore((state) => state.tasks.archiveTask);
   const unarchiveTask = useStore((state) => state.tasks.unarchiveTask);
+  const renameTask = useStore((state) => state.tasks.renameTask);
+
+  const [temporaryName, setTemporaryName] = useState(name);
+  const [changeNameMode, setChangeNameMode] = useState(false);
 
   const { startTime: ms, endTime: lastTimeActive } =
     periods[periods.length - 1];
+
+  function saveNewName() {
+    renameTask(id, temporaryName);
+    setChangeNameMode(false);
+  }
+
+  function handleEnter(e) {
+    if (e.key === "Enter") {
+      saveNewName();
+    }
+  }
 
   return (
     <Grid item xs={4}>
       <Card sx={{ minHeight: 200 }}>
         <CardContent>
-          <Typography variant="h5" align="center">
-            {name}
-          </Typography>
+          {changeNameMode ? (
+            <Input
+              value={temporaryName}
+              onInput={(e) => setTemporaryName(e.target.value)}
+              onKeyDown={handleEnter}
+              onBlur={saveNewName}
+              autoFocus
+              fullWidth
+            />
+          ) : (
+            <Typography
+              variant="h5"
+              align="center"
+              onClick={() => setChangeNameMode(true)}
+            >
+              {name}
+            </Typography>
+          )}
           <Grid container alignItems="center" flexWrap="nowrap">
             {/* TODO: make switch between showing last timer and summary timer */}
             <Timer
