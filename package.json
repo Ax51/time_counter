@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "start": "vite",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx} --no-error-on-unmatched-pattern",
     "lint:fix": "eslint src/**/*.{js,jsx,ts,tsx} --no-error-on-unmatched-pattern --fix",
     "build": "vite build",
