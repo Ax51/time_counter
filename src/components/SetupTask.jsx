@@ -16,7 +16,7 @@ import {
 } from "react-icons/bs";
 import { useStore } from "../store/store";
 
-export default function SetupTask() {
+export default function SetupTask({ runningTask }) {
   // const theme = useTheme();
   // console.log(theme);
 
@@ -57,7 +57,18 @@ export default function SetupTask() {
   return (
     <Box sx={{ mb: 2 }}>
       <Card sx={{ minWidth: 350, minHeight: 80 }}>
-        <CardContent>
+        <CardContent sx={{ position: "relative" }}>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              position: "absolute",
+              top: (theme) => theme.spacing(1.5),
+              left: (theme) => theme.spacing(2),
+              color: "text.disabled",
+            }}
+          >
+            {runningTask && `Traking task: ${runningTask.name}`}
+          </Typography>
           <Typography variant="h4" align="center">
             Setup timer
           </Typography>
