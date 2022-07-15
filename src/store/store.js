@@ -82,31 +82,35 @@ export const useStore = create(
                     i.periods[i.periods.length - 1].startTime;
                   const isTaskRunning =
                     i.periods[i.periods.length - 1].endTime === null;
-                  // found last active task
-                  if (isTaskRunning) {
+                  // found last active task or selected task which is active now
+                  // and pause them
+                  if (isTaskRunning || (i.id === id && isNowActive)) {
+                    const timeLeft = +new Date() - lastStartTime;
+                    const isMoreThanMinute = timeLeft > 60000;
                     return {
                       ...i,
                       isActive: false,
-                      periods: [
-                        ...i.periods.slice(0, -1),
-                        { startTime: lastStartTime, endTime: +new Date() },
-                      ],
-                    };
-                  }
-                  // found selected task
-                  if (i.id === id) {
-                    // pause active task
-                    if (isNowActive) {
-                      return {
-                        ...i,
-                        isActive: false,
-                        periods: [
+                      // If last period is less than a minute, so squash it
+                      // with last completed period
+                      periods: isMoreThanMinute || i.periods.length < 2
+                        ? [
                           ...i.periods.slice(0, -1),
                           { startTime: lastStartTime, endTime: +new Date() },
+                        ]
+                        : [
+                          ...i.periods.slice(0, -2),
+                          {
+                            startTime:
+                              i.periods[i.periods.length - 2].startTime,
+                            endTime:
+                              i.periods[i.periods.length - 2].endTime +
+                              timeLeft,
+                          },
                         ],
-                      };
-                    }
-                    // resume paused task and add new time period
+                    };
+                  }
+                  // found selected task if it's not active and start new period
+                  if (i.id === id) {
                     return {
                       ...i,
                       isActive: true,
