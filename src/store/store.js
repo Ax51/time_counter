@@ -61,6 +61,13 @@ export const useStore = create(
               tasks: { ...state.tasks, tasksArr: [...oldTasks, newTask] },
             };
           }),
+        deleteTask: (id) =>
+          set((state) => ({
+            tasks: {
+              ...state.tasks,
+              tasksArr: state.tasks.tasksArr.filter((i) => i.id !== id),
+            },
+          })),
         pauseTask: (id) =>
           set((state) => {
             const taskIndex = state.tasks.tasksArr.findIndex(
