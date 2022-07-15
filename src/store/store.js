@@ -54,6 +54,7 @@ export const useStore = create(
               name: givenData.name ?? taskInitialState.name,
               timestamp,
               isActive: givenData.isActive ?? taskInitialState.isActive,
+              isArchived: false,
               periods: [{ startTime: timestamp, endTime: null }],
             };
             return {
