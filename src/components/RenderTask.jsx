@@ -13,6 +13,8 @@ import {
   BsFillPlayCircleFill,
   BsFillPauseCircleFill,
   BsStopCircleFill,
+  BsClockHistory,
+  BsClock,
 } from "react-icons/bs";
 import { MdArchive, MdDeleteForever } from "react-icons/md";
 import useTimer from "../ui-components/useTimer";
@@ -119,7 +121,12 @@ export default function RenderTask({
                 sx={{ color: !isActive && "text.disabled" }}
                 onClick={toggleShownTime}
               >
-                {isActive && (isRenderLast ? "Active: " : "Total: ")}
+                {/* {isActive && (isRenderLast ? "Active: " : "Total: ")} */}
+                {isActive && (
+                  <IconButton color="primary">
+                    {isRenderLast ? <BsClockHistory /> : <BsClock />}
+                  </IconButton>
+                )}
                 {useTimer({
                   ms: isRenderLast ? ms : ms - totalSpent,
                   name,
