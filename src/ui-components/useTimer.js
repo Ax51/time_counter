@@ -34,7 +34,10 @@ export default function useTimer({
     } else {
       changeTitle();
     }
-  });
+    return () => {
+      changeTitle();
+    };
+  }, [hours, isActive, minutes, name, seconds]);
 
   useEffect(() => {
     if (isActive) {
