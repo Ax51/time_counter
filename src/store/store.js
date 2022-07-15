@@ -20,7 +20,7 @@ const taskInitialState = {
 
 export const useStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       tasks: {
         tasksArr: [],
         showActiveOnly: true,
@@ -61,7 +61,6 @@ export const useStore = create(
               tasks: { ...state.tasks, tasksArr: [...oldTasks, newTask] },
             };
           }),
-        findTask: (id) => get().tasks.tasksArr.filter((i) => i.id === id)[0],
         pauseTask: (id) =>
           set((state) => {
             const taskIndex = state.tasks.tasksArr.findIndex(
