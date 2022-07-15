@@ -16,7 +16,8 @@ import {
   BsClockHistory,
   BsClock,
 } from "react-icons/bs";
-import { MdArchive, MdDeleteForever } from "react-icons/md";
+import { MdArchive, MdUnarchive, MdDeleteForever } from "react-icons/md";
+import { HiClipboardCheck, HiClipboardList } from "react-icons/hi";
 import useTimer from "../ui-components/useTimer";
 import timeRender from "../ui-components/TimeRender";
 import { relativeToHumanTime } from "../utils/time";
@@ -69,23 +70,25 @@ export default function RenderTask({
     }
   }
 
-  function howToDelete() {
+  function howToDelete(e) {
     setShowWarnSnackbar(true);
   }
 
-  function handleDeleteTask() {
-    setShowWarnSnackbar(false);
-    deleteTask(id);
-    openSnackbar({
-      text: "Task permanently deleted",
-    });
+  function handleDeleteTask(e) {
+    if (e.shiftKey) {
+      setShowWarnSnackbar(false);
+      deleteTask(id);
+      openSnackbar({
+        text: "Task permanently deleted",
+      });
+    }
   }
 
   useTimeout(
     showWarnSnackbar,
     () => {
       openSnackbar({
-        text: "To permanently remove task you need to double click on icon",
+        text: "To permanently remove task you need to Shift + double click on icon",
         severity: "warning",
       });
       setShowWarnSnackbar(false);
@@ -174,9 +177,19 @@ export default function RenderTask({
             </>
           )}
           <Divider sx={{ my: 1 }} />
+          <Tooltip title="Mark Task as done">
+            {/* TODO: added the ability to mark task ready */}
+            <IconButton sx={{ color: "#34d53d" }}>
+              <HiClipboardCheck />
+              {/* TODO: if needed to unReady: <HiClipboardList /> */}
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Archive Task">
-            <IconButton color="warning" onClick={() => archiveTask(id)}>
-              <MdArchive />
+            <IconButton
+              onClick={() => archiveTask(id)}
+              sx={{ color: "#ffc300" }}
+            >
+              {isArchived ? <MdUnarchive /> : <MdArchive />}
             </IconButton>
           </Tooltip>
           <Tooltip title="Permanently delete Task">
