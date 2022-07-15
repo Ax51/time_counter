@@ -1,9 +1,14 @@
-import React, { useRef, useReducer, useEffect } from "react";
-import { Typography, Grid } from "@mui/material";
+import { useRef, useReducer, useEffect } from "react";
 import { relativeToHumanTime } from "../utils/time";
 import timeRender from "./TimeRender";
 
-export default function Timer({ ms, name, isActive, lastTimeActive }) {
+export default function useTimer({
+  ms,
+  name,
+  isActive,
+  lastTimeActive,
+  variant,
+}) {
   const msTimeLeft = lastTimeActive ? lastTimeActive - ms : +new Date() - ms;
   const { days, hours, minutes, seconds } = relativeToHumanTime(msTimeLeft);
   const forceUpdate = useReducer((state) => state + 1, 0)[1];
@@ -42,15 +47,5 @@ export default function Timer({ ms, name, isActive, lastTimeActive }) {
     };
   }, [isActive, forceUpdate]);
 
-  return (
-    <Grid>
-      {isActive ? (
-        <Typography>
-          {timeRender({ days, hours, minutes, seconds }, "fullStr")}
-        </Typography>
-      ) : (
-        <Typography sx={{ color: "text.disabled" }}>00 sec</Typography>
-      )}
-    </Grid>
-  );
+  return timeRender({ days, hours, minutes, seconds }, variant);
 }

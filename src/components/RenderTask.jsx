@@ -13,7 +13,7 @@ import {
   BsFillPauseCircleFill,
   BsStopCircleFill,
 } from "react-icons/bs";
-import Timer from "../ui-components/Timer";
+import useTimer from "../ui-components/useTimer";
 import timeRender from "../ui-components/TimeRender";
 import { relativeToHumanTime } from "../utils/time";
 import { useStore } from "../store/store";
@@ -26,19 +26,19 @@ export default function RenderTask({
   const unarchiveTask = useStore((state) => state.tasks.unarchiveTask);
   const renameTask = useStore((state) => state.tasks.renameTask);
 
+  const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
+
   const [temporaryName, setTemporaryName] = useState(name);
   const [changeNameMode, setChangeNameMode] = useState(false);
+  const [isRenderLast, setIsRenderLast] = useState(true);
 
   const { startTime: ms, endTime: lastTimeActive } =
     periods[periods.length - 1];
 
-  const endedPeriods = periods.filter((i) => i.endTime);
-  const totalSpent =
-    endedPeriods.length > 0
-      ? endedPeriods
-          .map((i) => i.endTime - i.startTime)
-          .reduce((prev, cur) => prev + cur, 0)
-      : 0;
+  const totalSpent = periods
+    .filter((i) => i.endTime)
+    .map((i) => i.endTime - i.startTime)
+    .reduce((prev, cur) => prev + cur, 0);
 
   function saveNewName() {
     renameTask(id, temporaryName);
@@ -48,6 +48,17 @@ export default function RenderTask({
   function handleEnter(e) {
     if (e.key === "Enter") {
       saveNewName();
+    }
+  }
+
+  function toggleShownTime() {
+    if (isActive) {
+      setIsRenderLast((prev) => !prev);
+      openSnackbar({
+        text: `Now task shows ${
+          isRenderLast ? "current Timer" : "summary time"
+        }`,
+      });
     }
   }
 
@@ -74,13 +85,20 @@ export default function RenderTask({
             </Typography>
           )}
           <Grid container alignItems="center" flexWrap="nowrap">
-            {/* TODO: make switch between showing last timer and summary timer */}
-            <Timer
-              ms={ms}
-              name={name}
-              isActive={isActive}
-              lastTimeActive={lastTimeActive}
-            />
+            <Grid>
+              <Typography
+                sx={{ color: !isActive && "text.disabled" }}
+                onClick={toggleShownTime}
+              >
+                {useTimer({
+                  ms: isRenderLast ? ms : ms - totalSpent,
+                  name,
+                  isActive,
+                  lastTimeActive,
+                  variant: isActive ? "shortStr" : "fullStr",
+                })}
+              </Typography>
+            </Grid>
             <div>
               <IconButton
                 color={
