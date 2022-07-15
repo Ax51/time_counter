@@ -30,6 +30,22 @@ export const stringToMs = {
   second: 1000,
 };
 
+export function humanToMs({ days = 0, hours = 0, minutes = 0, seconds = 0 }) {
+  const d = +days;
+  const h = +hours;
+  const m = +minutes;
+  const s = +seconds;
+  if (!d && !h && !m && !s) {
+    return new Error("Incorrect input while trying to convert humanToMs");
+  }
+  return (
+    d * stringToMs.day +
+    h * stringToMs.hour +
+    m * stringToMs.minute +
+    s * stringToMs.second
+  );
+}
+
 export function relativeToHumanTime(ms) {
   const days = Math.floor(ms / stringToMs.day);
   const hours = Math.floor((ms % stringToMs.day) / stringToMs.hour);
