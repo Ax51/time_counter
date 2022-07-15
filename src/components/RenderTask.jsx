@@ -7,16 +7,19 @@ import {
   IconButton,
   Input,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import {
   BsFillPlayCircleFill,
   BsFillPauseCircleFill,
   BsStopCircleFill,
 } from "react-icons/bs";
+import { MdArchive, MdDeleteForever } from "react-icons/md";
 import useTimer from "../ui-components/useTimer";
 import timeRender from "../ui-components/TimeRender";
 import { relativeToHumanTime } from "../utils/time";
 import { useStore } from "../store/store";
+import useTimeout from "../utils/useTimeout";
 
 export default function RenderTask({
   task: { id, name, isActive, isArchived, periods },
@@ -25,12 +28,14 @@ export default function RenderTask({
   const archiveTask = useStore((state) => state.tasks.archiveTask);
   const unarchiveTask = useStore((state) => state.tasks.unarchiveTask);
   const renameTask = useStore((state) => state.tasks.renameTask);
+  const deleteTask = useStore((state) => state.tasks.deleteTask);
 
   const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
 
   const [temporaryName, setTemporaryName] = useState(name);
   const [changeNameMode, setChangeNameMode] = useState(false);
   const [isRenderLast, setIsRenderLast] = useState(true);
+  const [showWarnSnackbar, setShowWarnSnackbar] = useState(false);
 
   const { startTime: ms, endTime: lastTimeActive } =
     periods[periods.length - 1];
@@ -53,14 +58,38 @@ export default function RenderTask({
 
   function toggleShownTime() {
     if (isActive) {
-      setIsRenderLast((prev) => !prev);
       openSnackbar({
         text: `Now task shows ${
-          isRenderLast ? "current Timer" : "summary time"
+          isRenderLast ? "summary time" : "current Timer"
         }`,
       });
+      setIsRenderLast((prev) => !prev);
     }
   }
+
+  function howToDelete() {
+    setShowWarnSnackbar(true);
+  }
+
+  function handleDeleteTask() {
+    setShowWarnSnackbar(false);
+    deleteTask(id);
+    openSnackbar({
+      text: "Task permanently deleted",
+    });
+  }
+
+  useTimeout(
+    showWarnSnackbar,
+    () => {
+      openSnackbar({
+        text: "To permanently remove task you need to double click on icon",
+        severity: "warning",
+      });
+      setShowWarnSnackbar(false);
+    },
+    500,
+  );
 
   return (
     <Grid item xs={4}>
@@ -90,6 +119,7 @@ export default function RenderTask({
                 sx={{ color: !isActive && "text.disabled" }}
                 onClick={toggleShownTime}
               >
+                {isActive && (isRenderLast ? "Active: " : "Total: ")}
                 {useTimer({
                   ms: isRenderLast ? ms : ms - totalSpent,
                   name,
@@ -137,9 +167,20 @@ export default function RenderTask({
             </>
           )}
           <Divider sx={{ my: 1 }} />
-          <button type="button" onClick={() => archiveTask(id)}>
-            archive
-          </button>
+          <Tooltip title="Archive Task">
+            <IconButton color="warning" onClick={() => archiveTask(id)}>
+              <MdArchive />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Permanently delete Task">
+            <IconButton
+              color="error"
+              onClick={howToDelete}
+              onDoubleClick={handleDeleteTask}
+            >
+              <MdDeleteForever />
+            </IconButton>
+          </Tooltip>
         </CardContent>
       </Card>
     </Grid>
