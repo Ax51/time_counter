@@ -26,7 +26,10 @@ export const useStore = create(
         showActiveOnly: true,
         toggleShowActiveOnly: () =>
           set((state) => ({
-            tasks: { ...state.tasks, showActiveOnly: !state.tasks.showActiveOnly },
+            tasks: {
+              ...state.tasks,
+              showActiveOnly: !state.tasks.showActiveOnly,
+            },
           })),
         addTask: (givenData) =>
           set((state) => {
@@ -111,6 +114,20 @@ export const useStore = create(
               },
             };
           }),
+        renameTask: (id, newName) =>
+          set((state) => ({
+            tasks: {
+              ...state.tasks,
+              tasksArr: state.tasks.tasksArr.map((i) =>
+                i.id === id
+                  ? {
+                    ...i,
+                    name: newName,
+                  }
+                  : i,
+              ),
+            },
+          })),
         archiveTask: (id) =>
           set((state) => ({
             tasks: {
@@ -142,7 +159,8 @@ export const useStore = create(
               ...state.tasks,
               showActiveOnly: true,
               tasksArr: state.tasks.tasksArr.map((i) => {
-                const isTaskRunning = i.periods[i.periods.length - 1].endTime === null;
+                const isTaskRunning =
+                  i.periods[i.periods.length - 1].endTime === null;
                 const lastStartTime = i.periods[i.periods.length - 1].startTime;
                 if (isTaskRunning) {
                   return {
@@ -154,8 +172,8 @@ export const useStore = create(
                         startTime: lastStartTime,
                         endTime: +new Date(),
                       },
-                    ]
-                  }
+                    ],
+                  };
                 }
                 if (i.id === id) {
                   return {
@@ -169,9 +187,9 @@ export const useStore = create(
                       },
                     ],
                     isActive: true,
-                  }
+                  };
                 }
-                return i
+                return i;
               }),
             },
           })),
