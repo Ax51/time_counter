@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Grid,
   Card,
   CardContent,
@@ -60,14 +61,10 @@ export default function RenderTask({
   }
 
   function toggleShownTime() {
-    if (isActive) {
-      openSnackbar({
-        text: `Now task shows ${
-          isRenderLast ? "summary time" : "current Timer"
-        }`,
-      });
-      setIsRenderLast((prev) => !prev);
-    }
+    openSnackbar({
+      text: `Now task shows ${isRenderLast ? "summary time" : "current Timer"}`,
+    });
+    setIsRenderLast((prev) => !prev);
   }
 
   function howToDelete() {
@@ -118,20 +115,22 @@ export default function RenderTask({
               variant="h5"
               align="center"
               onClick={() => setChangeNameMode(true)}
-              sx={{ textDecoration: isDone ? "line-through" : "" }}
+              sx={{
+                textDecoration: isDone ? "line-through" : "",
+                color: "success.light",
+              }}
             >
-              {name}
+              <Box component="span" sx={{ color: "text.primary" }}>
+                {name}
+              </Box>
             </Typography>
           )}
           <Grid container alignItems="center" flexWrap="nowrap">
             <Grid>
-              <Typography
-                sx={{ color: !isActive && "text.disabled" }}
-                onClick={toggleShownTime}
-              >
+              <Typography sx={{ color: !isActive && "text.disabled" }}>
                 {/* {isActive && (isRenderLast ? "Active: " : "Total: ")} */}
                 {isActive && (
-                  <IconButton color="primary">
+                  <IconButton color="primary" onClick={toggleShownTime}>
                     {isRenderLast ? <BsClockHistory /> : <BsClock />}
                   </IconButton>
                 )}
@@ -184,20 +183,17 @@ export default function RenderTask({
             </>
           )}
           <Divider sx={{ my: 1 }} />
-          <Tooltip title="Mark Task as done">
+          <Tooltip
+            title={isDone ? "Mark Task as incomplete" : "Mark Task as done"}
+          >
             {/* TODO: added the ability to mark task ready */}
             <IconButton sx={{ color: "#34d53d" }} onClick={handleTaskDone}>
-              <HiClipboardCheck />
-              {/* TODO: if needed to unReady: <HiClipboardList /> */}
+              {isDone ? <HiClipboardList /> : <HiClipboardCheck />}
             </IconButton>
           </Tooltip>
-          <Tooltip title="Archive Task">
+          <Tooltip title={isArchived ? "Unarchive Task" : "Archive Task"}>
             <IconButton
-              onClick={() =>
-                /* isArchived ? unarchiveTask(id) : archiveTask(id) */ toggleArchiveTask(
-                  id,
-                )
-              }
+              onClick={() => toggleArchiveTask(id)}
               sx={{ color: "#ffc300" }}
             >
               {isArchived ? <MdUnarchive /> : <MdArchive />}
