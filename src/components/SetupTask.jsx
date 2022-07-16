@@ -92,7 +92,7 @@ export default function SetupTask({ runningTask }) {
               }}
               control={
                 <Switch
-                  checked={isActiveOnly}
+                  checked={!isActiveOnly}
                   onChange={toggleActiveOnly}
                   name="filter active tasks"
                   color="primary"
