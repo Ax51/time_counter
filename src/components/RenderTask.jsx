@@ -28,8 +28,7 @@ export default function RenderTask({
   task: { id, name, isActive, isDone, isArchived, periods },
 }) {
   const pauseTask = useStore((state) => state.tasks.pauseTask);
-  const archiveTask = useStore((state) => state.tasks.archiveTask);
-  const unarchiveTask = useStore((state) => state.tasks.unarchiveTask);
+  const toggleArchiveTask = useStore((state) => state.tasks.toggleArchiveTask);
   const renameTask = useStore((state) => state.tasks.renameTask);
   const toggleDoneTask = useStore((state) => state.tasks.toggleDoneTask);
   const deleteTask = useStore((state) => state.tasks.deleteTask);
@@ -151,7 +150,9 @@ export default function RenderTask({
                   isArchived ? "error" : isActive ? "secondary" : "primary"
                 }
                 size="large"
-                onClick={() => (isArchived ? unarchiveTask(id) : pauseTask(id))}
+                onClick={() =>
+                  isArchived ? toggleArchiveTask(id) : pauseTask(id)
+                }
               >
                 {isArchived ? (
                   <BsStopCircleFill />
@@ -192,7 +193,11 @@ export default function RenderTask({
           </Tooltip>
           <Tooltip title="Archive Task">
             <IconButton
-              onClick={() => (isArchived ? unarchiveTask(id) : archiveTask(id))}
+              onClick={() =>
+                /* isArchived ? unarchiveTask(id) : archiveTask(id) */ toggleArchiveTask(
+                  id,
+                )
+              }
               sx={{ color: "#ffc300" }}
             >
               {isArchived ? <MdUnarchive /> : <MdArchive />}
