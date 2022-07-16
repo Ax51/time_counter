@@ -25,12 +25,13 @@ import { useStore } from "../store/store";
 import useTimeout from "../utils/useTimeout";
 
 export default function RenderTask({
-  task: { id, name, isActive, isArchived, periods },
+  task: { id, name, isActive, isDone, isArchived, periods },
 }) {
   const pauseTask = useStore((state) => state.tasks.pauseTask);
   const archiveTask = useStore((state) => state.tasks.archiveTask);
   const unarchiveTask = useStore((state) => state.tasks.unarchiveTask);
   const renameTask = useStore((state) => state.tasks.renameTask);
+  const toggleDoneTask = useStore((state) => state.tasks.toggleDoneTask);
   const deleteTask = useStore((state) => state.tasks.deleteTask);
 
   const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
@@ -70,7 +71,7 @@ export default function RenderTask({
     }
   }
 
-  function howToDelete(e) {
+  function howToDelete() {
     setShowWarnSnackbar(true);
   }
 
@@ -82,6 +83,10 @@ export default function RenderTask({
         text: "Task permanently deleted",
       });
     }
+  }
+
+  function handleTaskDone() {
+    toggleDoneTask(id);
   }
 
   useTimeout(
@@ -114,6 +119,7 @@ export default function RenderTask({
               variant="h5"
               align="center"
               onClick={() => setChangeNameMode(true)}
+              sx={{ textDecoration: isDone ? "line-through" : "" }}
             >
               {name}
             </Typography>
@@ -131,7 +137,7 @@ export default function RenderTask({
                   </IconButton>
                 )}
                 {useTimer({
-                  ms: isRenderLast ? ms : ms - totalSpent,
+                  ms: isActive ? (isRenderLast ? ms : ms - totalSpent) : ms,
                   name,
                   isActive,
                   lastTimeActive,
@@ -179,14 +185,14 @@ export default function RenderTask({
           <Divider sx={{ my: 1 }} />
           <Tooltip title="Mark Task as done">
             {/* TODO: added the ability to mark task ready */}
-            <IconButton sx={{ color: "#34d53d" }}>
+            <IconButton sx={{ color: "#34d53d" }} onClick={handleTaskDone}>
               <HiClipboardCheck />
               {/* TODO: if needed to unReady: <HiClipboardList /> */}
             </IconButton>
           </Tooltip>
           <Tooltip title="Archive Task">
             <IconButton
-              onClick={() => archiveTask(id)}
+              onClick={() => (isArchived ? unarchiveTask(id) : archiveTask(id))}
               sx={{ color: "#ffc300" }}
             >
               {isArchived ? <MdUnarchive /> : <MdArchive />}
