@@ -20,8 +20,7 @@ import {
 import { MdArchive, MdUnarchive, MdDeleteForever } from "react-icons/md";
 import { HiClipboardCheck, HiClipboardList } from "react-icons/hi";
 import useTimer from "../ui-components/useTimer";
-import timeRender from "../ui-components/TimeRender";
-import { relativeToHumanTime, useTimeout } from "../utils";
+import { relativeToHumanTime, useTimeout, timeRender } from "../utils";
 import { useStore } from "../store/store";
 
 export default function RenderTask({

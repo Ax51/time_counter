@@ -1,6 +1,5 @@
 import { useRef, useReducer, useEffect } from "react";
-import { relativeToHumanTime } from "../utils";
-import timeRender from "./TimeRender";
+import { relativeToHumanTime, timeRender } from "../utils";
 
 export default function useTimer({
   ms,

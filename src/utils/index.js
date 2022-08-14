@@ -6,5 +6,6 @@ export {
   humanToMs,
   relativeToHumanTime,
   msTimeSpent,
+  timeRender,
 } from "./timeUtils";
 export { useActiveTask } from "./useActiveTask";
