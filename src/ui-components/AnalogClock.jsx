@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Grid } from "@mui/material";
 import {
   Clock,
@@ -12,10 +12,11 @@ import {
   MinuteHand,
   SecondHand,
 } from "./AnalogClockComponents";
-import { useInterval, relativeToHumanTime } from "../utils";
+import { useInterval, relativeToHumanTime, useActiveTask } from "../utils";
 
-export default function AnalogClock({ ms, runningTask, fixedTime = false }) {
-  const clockMode = !ms && !runningTask;
+export default function AnalogClock({ trackActiveTask = false }) {
+  const activeTask = useActiveTask();
+  const clockMode = !trackActiveTask || !activeTask;
   const [{ hourDeg, minuteDeg, secondDeg }, setHandsDeg] = useState({
     hourDeg: 0,
     minuteDeg: 0,
@@ -30,25 +31,26 @@ export default function AnalogClock({ ms, runningTask, fixedTime = false }) {
     };
   }
 
-  useInterval(
-    () => {
-      if (ms || runningTask) {
-        const spent =
-          Date.now() -
-          (ms || runningTask.periods[runningTask.periods.length - 1].startTime);
-        const { hours, minutes, seconds } = relativeToHumanTime(spent);
-        setHandsDeg(calcHandsDeg(hours, minutes, seconds));
-      } else {
-        const now = new Date();
-        const hour = now.getHours();
-        const mins = now.getMinutes();
-        const seconds = now.getSeconds();
+  const setupClock = useCallback(() => {
+    if (clockMode) {
+      const now = new Date();
+      const hour = now.getHours();
+      const mins = now.getMinutes();
+      const seconds = now.getSeconds();
 
-        setHandsDeg(calcHandsDeg(hour, mins, seconds));
-      }
-    },
-    fixedTime ? null : 1000,
-  );
+      setHandsDeg(calcHandsDeg(hour, mins, seconds));
+    } else {
+      const spent =
+        Date.now() -
+        activeTask.periods[activeTask.periods.length - 1].startTime;
+      const { hours, minutes, seconds } = relativeToHumanTime(spent);
+      setHandsDeg(calcHandsDeg(hours, minutes, seconds));
+    }
+  }, [activeTask, clockMode]);
+
+  useEffect(setupClock, [setupClock]);
+
+  useInterval(setupClock, 500);
 
   return (
     <Grid container justifyContent="center" alignItems="center">
@@ -67,7 +69,6 @@ export default function AnalogClock({ ms, runningTask, fixedTime = false }) {
             <SecondHand sx={{ transform: `rotate(${secondDeg}deg)` }} />
           </InnerClockFace>
         </OuterClockFace>
-        {/* {timeRender()} */}
       </Clock>
     </Grid>
   );

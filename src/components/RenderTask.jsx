@@ -89,7 +89,7 @@ export default function RenderTask({
       });
       setShowWarnSnackbar(false);
     },
-    showWarnSnackbar ? 500 : null,
+    showWarnSnackbar ? 1000 : null,
   );
 
   return (
@@ -181,7 +181,6 @@ export default function RenderTask({
           <Tooltip
             title={isDone ? "Mark Task as incomplete" : "Mark Task as done"}
           >
-            {/* TODO: added the ability to mark task ready */}
             <IconButton
               sx={{ color: "#34d53d" }}
               onClick={() => toggleDoneTask(id)}

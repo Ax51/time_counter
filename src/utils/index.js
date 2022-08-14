@@ -7,3 +7,4 @@ export {
   relativeToHumanTime,
   msTimeSpent,
 } from "./time";
+export { useActiveTask } from "./useActiveTask";

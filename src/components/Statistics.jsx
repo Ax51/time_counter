@@ -5,16 +5,13 @@ import {
   CardContent,
   Typography,
   Grid,
-  Box,
   Divider,
 } from "@mui/material";
 import AnalogClock from "../ui-components/AnalogClock";
+import { useActiveTask } from "../utils";
 
-export default function Statistics({ runningTask }) {
-  console.log("Running Task:", runningTask);
-  const msSpent = runningTask
-    ? runningTask.periods[runningTask.periods.length - 1].startTime
-    : 200;
+export default function Statistics() {
+  const runningTask = useActiveTask();
   return (
     <Card sx={{ width: "100%", minHeight: "100px", mb: 2 }}>
       <CardHeader
@@ -32,13 +29,13 @@ export default function Statistics({ runningTask }) {
             <Typography variant="h6" textAlign="center">
               Today
             </Typography>
-            <AnalogClock ms={msSpent} />
+            <AnalogClock />
           </Grid>
           <Grid item xs={4}>
             <Typography variant="h6" textAlign="center">
               {runningTask ? "Actual timer" : "Clock"}
             </Typography>
-            <AnalogClock runningTask={runningTask} />
+            <AnalogClock trackActiveTask />
           </Grid>
           <Grid item xs={4}>
             <Typography variant="h6" textAlign="center">

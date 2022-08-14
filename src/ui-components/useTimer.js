@@ -9,7 +9,7 @@ export default function useTimer({
   lastTimeActive,
   variant,
 }) {
-  const msTimeLeft = lastTimeActive ? lastTimeActive - ms : +new Date() - ms;
+  const msTimeLeft = lastTimeActive ? lastTimeActive - ms : Date.now() - ms;
   const { days, hours, minutes, seconds } = relativeToHumanTime(msTimeLeft);
   const forceUpdate = useReducer((state) => !state, 0)[1];
   const timerIdRef = useRef(null);

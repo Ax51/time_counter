@@ -3,13 +3,13 @@ import { nanoid } from "nanoid";
 export const taskInitialState = {
   id: String(),
   name: String(),
-  timestamp: +new Date(),
+  timestamp: Date.now(),
   isActive: Boolean(),
   isDone: false,
   isArchived: Boolean(),
   periods: [
-    { startTime: +new Date(), endTime: +new Date() },
-    { startTime: +new Date(), endTime: null },
+    { startTime: Date.now(), endTime: Date.now() },
+    { startTime: Date.now(), endTime: null },
   ],
 };
 
@@ -26,7 +26,7 @@ export function checkNewTaskPropertiesUtil(newTask, initialTask) {
 
   if (newTaskLen !== initialTaskLen) {
     console.error(
-      "Check creating new task properties in store. Mismatch with initial task:",
+      "Check creatingtask.now properties in store. Mismatch with initial task:",
       mismatchedProperties,
     );
     return false;
@@ -37,7 +37,7 @@ export function checkNewTaskPropertiesUtil(newTask, initialTask) {
 export function stopRunningTask(task) {
   const { periods } = task;
   const lastStartTime = periods[periods.length - 1].startTime;
-  const timeLeft = +new Date() - lastStartTime;
+  const timeLeft = Date.now() - lastStartTime;
   const isMoreThanMinute = timeLeft > 60000;
   return {
     ...task,
@@ -50,7 +50,7 @@ export function stopRunningTask(task) {
           ...periods.slice(0, -1),
           {
             startTime: lastStartTime,
-            endTime: +new Date(),
+            endTime: Date.now(),
           },
         ]
         : [
@@ -69,7 +69,7 @@ export function resumePausedTask(task) {
     isDone: false,
     isArchived: false,
     isActive: true,
-    periods: [...task.periods, { startTime: +new Date(), endTime: null }],
+    periods: [...task.periods, { startTime: Date.now(), endTime: null }],
   };
 }
 

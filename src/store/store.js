@@ -8,10 +8,22 @@ import { createNewTask, resumePausedTask, stopRunningTask } from "./storeUtils";
 
 export const useStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       tasks: {
         tasksArr: [],
         showActiveOnly: true,
+        getTodayActivity: () =>
+          get()
+            .tasks.tasksArr.reduce((a, b) => {
+              a.push(...b.periods);
+              return a;
+            }, [])
+            .filter((i) => i.startTime > +new Date().setHours(0, 0, 0, 0))
+            .reduce(
+              (total, { startTime, endTime }) =>
+                endTime ? total + (endTime - startTime) : total,
+              0,
+            ),
         toggleShowActiveOnly: () =>
           set((state) => ({
             tasks: {
@@ -43,7 +55,6 @@ export const useStore = create(
               tasksArr: state.tasks.tasksArr.map((i) => {
                 // Found given task
                 if (i.id === id) {
-                  // Check if it's active and now running
                   if (i.isActive) {
                     return {
                       ...stopRunningTask(i),
@@ -92,7 +103,6 @@ export const useStore = create(
               ),
             },
           })),
-        // TODO: swtich to toggleArhiveTask
         toggleArchiveTask: (id) =>
           set((state) => ({
             tasks: {

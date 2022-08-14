@@ -15,11 +15,10 @@ import {
   BsFillPlayCircleFill /* BsFillPauseCircleFill */,
 } from "react-icons/bs";
 import { useStore } from "../store/store";
+import { useActiveTask } from "../utils";
 
-export default function SetupTask({ runningTask }) {
-  // const theme = useTheme();
-  // console.log(theme);
-
+export default function SetupTask() {
+  const runningTask = useActiveTask();
   const addTask = useStore((state) => state.tasks.addTask);
   const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
   const [inputText, setInputText] = useState("");
@@ -39,7 +38,7 @@ export default function SetupTask({ runningTask }) {
     if (inputText) {
       addTask({
         name: inputText,
-        timestamp: +new Date(),
+        timestamp: Date.now(),
         isActive: true,
       });
       resetInput();

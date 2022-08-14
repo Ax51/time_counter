@@ -65,5 +65,5 @@ export function relativeToHumanTime(ms) {
 }
 
 export function msTimeSpent(ms) {
-  return +new Date() - ms;
+  return Date.now() - ms;
 }
