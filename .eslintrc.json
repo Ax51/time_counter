@@ -39,6 +39,24 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "no-debugger": "warn",
-    "no-console": ["warn", { "allow": ["warn", "error"] }]
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-warning-comments": [
+      "warn",
+      {
+        "terms": [
+          "BUG",
+          "HACK",
+          "FIXME",
+          "TODO",
+          "CHECK",
+          "DELETE",
+          "FIX",
+          "FIXIT",
+          "DEL",
+          "REMOVE",
+          "JUNK"
+        ]
+      }
+    ]
   }
 }
