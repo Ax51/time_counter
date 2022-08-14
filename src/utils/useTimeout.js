@@ -1,12 +1,9 @@
 import { useEffect, useRef } from "react";
 
-export default function useTimeout(
-  enableTimer,
-  callback = () => {
-    /** do nothing */
-  },
-  interval = 1000,
-) {
+export function useTimeout(callback, delay = 1000) {
+  if (!callback) {
+    throw new Error("No callback given to useTimeout");
+  }
   const timerIdRef = useRef(null);
   const savedCallbackRef = useRef();
 
@@ -15,13 +12,37 @@ export default function useTimeout(
   }, [callback]);
 
   useEffect(() => {
-    if (enableTimer) {
-      timerIdRef.current = setTimeout(savedCallbackRef.current, interval);
+    if (delay !== null) {
+      timerIdRef.current = setTimeout(savedCallbackRef.current, delay);
     } else {
       clearTimeout(timerIdRef.current);
     }
     return () => {
       clearTimeout(timerIdRef.current);
     };
-  }, [enableTimer, callback, interval]);
+  }, [delay]);
+}
+
+export function useInterval(callback, delay) {
+  if (!callback) {
+    throw new Error("No callback given to useTimeout");
+  }
+  const intervalIdRef = useRef(null);
+  const savedCallback = useRef();
+
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      intervalIdRef.current = setInterval(tick, delay);
+    } else {
+      clearInterval(intervalIdRef.current);
+    }
+    return () => clearInterval(intervalIdRef.current);
+  }, [delay]);
 }

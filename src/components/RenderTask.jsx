@@ -23,7 +23,7 @@ import useTimer from "../ui-components/useTimer";
 import timeRender from "../ui-components/TimeRender";
 import { relativeToHumanTime } from "../utils/time";
 import { useStore } from "../store/store";
-import useTimeout from "../utils/useTimeout";
+import { useTimeout } from "../utils/useTimeout";
 
 export default function RenderTask({
   task: { id, name, isActive, isDone, isArchived, periods },
@@ -81,12 +81,7 @@ export default function RenderTask({
     }
   }
 
-  function handleTaskDone() {
-    toggleDoneTask(id);
-  }
-
   useTimeout(
-    showWarnSnackbar,
     () => {
       openSnackbar({
         text: "To permanently remove task you need to Shift + double click on icon",
@@ -94,7 +89,7 @@ export default function RenderTask({
       });
       setShowWarnSnackbar(false);
     },
-    500,
+    showWarnSnackbar ? 500 : null,
   );
 
   return (
@@ -187,7 +182,10 @@ export default function RenderTask({
             title={isDone ? "Mark Task as incomplete" : "Mark Task as done"}
           >
             {/* TODO: added the ability to mark task ready */}
-            <IconButton sx={{ color: "#34d53d" }} onClick={handleTaskDone}>
+            <IconButton
+              sx={{ color: "#34d53d" }}
+              onClick={() => toggleDoneTask(id)}
+            >
               {isDone ? <HiClipboardList /> : <HiClipboardCheck />}
             </IconButton>
           </Tooltip>
