@@ -26,7 +26,7 @@ export const useStore = create(
             );
             const newTask = createNewTask(givenData);
             return {
-              tasks: { ...state.tasks, tasksArr: [...oldTasks, newTask] },
+              tasks: { ...state.tasks, tasksArr: [newTask, ...oldTasks] },
             };
           }),
         deleteTask: (id) =>
