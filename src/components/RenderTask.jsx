@@ -21,9 +21,8 @@ import { MdArchive, MdUnarchive, MdDeleteForever } from "react-icons/md";
 import { HiClipboardCheck, HiClipboardList } from "react-icons/hi";
 import useTimer from "../ui-components/useTimer";
 import timeRender from "../ui-components/TimeRender";
-import { relativeToHumanTime } from "../utils/time";
+import { relativeToHumanTime, useTimeout } from "../utils";
 import { useStore } from "../store/store";
-import { useTimeout } from "../utils/useTimeout";
 
 export default function RenderTask({
   task: { id, name, isActive, isDone, isArchived, periods },

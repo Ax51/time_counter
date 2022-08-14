@@ -4,7 +4,7 @@ import { useStore } from "./store/store";
 import SetupTask from "./components/SetupTask";
 import RenderTask from "./components/RenderTask";
 import Statistics from "./components/Statistics";
-import Snackbar from "./utils/Snackbar";
+import { Snackbar } from "./utils";
 
 export default function App() {
   const tasks = useStore((state) => state.tasks.tasksArr);
