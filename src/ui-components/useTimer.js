@@ -11,7 +11,7 @@ export default function useTimer({
 }) {
   const msTimeLeft = lastTimeActive ? lastTimeActive - ms : +new Date() - ms;
   const { days, hours, minutes, seconds } = relativeToHumanTime(msTimeLeft);
-  const forceUpdate = useReducer((state) => state + 1, 0)[1];
+  const forceUpdate = useReducer((state) => !state, 0)[1];
   const timerIdRef = useRef(null);
   const titleStoreRef = useRef(document.title);
 
@@ -41,7 +41,7 @@ export default function useTimer({
 
   useEffect(() => {
     if (isActive) {
-      timerIdRef.current = setInterval(() => forceUpdate(), 1000);
+      timerIdRef.current = setInterval(forceUpdate, 1000);
     } else {
       clearInterval(timerIdRef.current);
     }
