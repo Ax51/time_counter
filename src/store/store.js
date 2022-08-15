@@ -5,7 +5,7 @@ import merge from "deepmerge";
 import { createNewTask, resumePausedTask, stopRunningTask } from "./storeUtils";
 
 // TODO: add zustand lens to separate stores
-
+// TODO: split store to the separate stores and export each respectively
 export const useStore = create(
   persist(
     (set, get) => ({
@@ -24,6 +24,24 @@ export const useStore = create(
                 endTime ? total + (endTime - startTime) : total,
               0,
             ),
+        getWeekActivity: () => {
+          const now = new Date();
+          now.setUTCHours(0, 0, 0, 0);
+          now.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+          const startOfThisWeek = +now;
+          return get()
+            .tasks.tasksArr.reduce((a, b) => {
+              a.push(...b.periods);
+              return a;
+            }, [])
+            .filter((i) => i.startTime > startOfThisWeek)
+            .reduce(
+              (total, { startTime, endTime }) =>
+                endTime ? total + (endTime - startTime) : total,
+              0,
+            );
+        },
+        runningTask: () => get().tasks.tasksArr.find((task) => task.isActive),
         toggleShowActiveOnly: () =>
           set((state) => ({
             tasks: {

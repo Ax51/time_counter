@@ -12,24 +12,27 @@ import {
   MinuteHand,
   SecondHand,
 } from "./AnalogClockComponents";
-import { useInterval, relativeToHumanTime, useActiveTask } from "../utils";
+import { useStore } from "../store";
+import { useInterval, relativeToHumanTime } from "../utils";
 
 export default function AnalogClock({ trackActiveTask = false }) {
-  const activeTask = useActiveTask();
-  const clockMode = !trackActiveTask || !activeTask;
+  const runningTask = useStore((store) => store.tasks.runningTask());
+
+  const clockMode = !trackActiveTask || !runningTask;
   const [{ hourDeg, minuteDeg, secondDeg }, setHandsDeg] = useState({
     hourDeg: 0,
     minuteDeg: 0,
     secondDeg: 0,
   });
 
-  function calcHandsDeg(hour, mins, secs) {
-    return {
+  const calcHandsDeg = useCallback(
+    (hour, mins, secs) => ({
       hourDeg: (hour / 12) * 360 + (mins / 60) * 30 + 90,
       minuteDeg: (mins / 60) * 360 + (secs / 60) * 6 + 90,
       secondDeg: (secs / 60) * 360 + 90,
-    };
-  }
+    }),
+    [],
+  );
 
   const setupClock = useCallback(() => {
     if (clockMode) {
@@ -42,11 +45,11 @@ export default function AnalogClock({ trackActiveTask = false }) {
     } else {
       const spent =
         Date.now() -
-        activeTask.periods[activeTask.periods.length - 1].startTime;
+        runningTask.periods[runningTask.periods.length - 1].startTime;
       const { hours, minutes, seconds } = relativeToHumanTime(spent);
       setHandsDeg(calcHandsDeg(hours, minutes, seconds));
     }
-  }, [activeTask, clockMode]);
+  }, [clockMode, calcHandsDeg, runningTask?.periods]);
 
   useEffect(setupClock, [setupClock]);
 

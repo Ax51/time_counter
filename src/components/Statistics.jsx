@@ -8,10 +8,18 @@ import {
   Divider,
 } from "@mui/material";
 import AnalogClock from "../ui-components/AnalogClock";
-import { useActiveTask } from "../utils";
+import { useStore } from "../store";
+import { relativeToHumanTime, timeRender, useDailyRefresh } from "../utils";
 
 export default function Statistics() {
-  const runningTask = useActiveTask();
+  const runningTask = useStore((store) => store.tasks.runningTask());
+  const todayMsTraced = useStore((store) => store.tasks.getTodayActivity());
+  const todayTracedObj = relativeToHumanTime(todayMsTraced);
+  const weeklyTraced = useStore((store) => store.tasks.getWeekActivity());
+  const weeklyTracedObj = relativeToHumanTime(weeklyTraced);
+
+  useDailyRefresh();
+
   return (
     <Card sx={{ width: "100%", minHeight: "100px", mb: 2 }}>
       <CardHeader
@@ -29,7 +37,14 @@ export default function Statistics() {
             <Typography variant="h6" textAlign="center">
               Today
             </Typography>
-            <AnalogClock />
+            <Typography sx={{ my: 3, borderBottom: 1 }}>
+              Today we traced: <strong>{timeRender(todayTracedObj)}</strong>
+            </Typography>
+            <Typography sx={{ my: 3, borderBottom: 1 }}>
+              This week we traced:
+              <br />
+              <strong>{timeRender(weeklyTracedObj, "daysToHours")}</strong>
+            </Typography>
           </Grid>
           <Grid item xs={4}>
             <Typography variant="h6" textAlign="center">
@@ -39,7 +54,7 @@ export default function Statistics() {
           </Grid>
           <Grid item xs={4}>
             <Typography variant="h6" textAlign="center">
-              This Week
+              Calendar
             </Typography>
             56
           </Grid>

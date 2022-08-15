@@ -15,10 +15,9 @@ import {
   BsFillPlayCircleFill /* BsFillPauseCircleFill */,
 } from "react-icons/bs";
 import { useStore } from "../store/store";
-import { useActiveTask } from "../utils";
 
 export default function SetupTask() {
-  const runningTask = useActiveTask();
+  const runningTask = useStore((store) => store.tasks.runningTask());
   const addTask = useStore((state) => state.tasks.addTask);
   const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
   const [inputText, setInputText] = useState("");
