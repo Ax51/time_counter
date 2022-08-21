@@ -81,7 +81,9 @@ export function timeRender(
       ${+minutes ? `${minutes} min, ` : ""}
       ${+seconds ? `${seconds} sec` : ""}`;
     case "daysToHours":
-      return `${+days * 24 + +hours} hours and ${minutes} minutes`;
+      const totalHours = +days * 24 + +hours;
+      return `${totalHours} ${totalHours > 1 ? "hours" : "hour"
+        } and ${minutes} ${+minutes === 1 ? "minutes" : "minute"}`;
     case "extendStr":
       return `${+days ? `${days} Days, ` : ""}
       ${+hours ? `${+hours} ${hours > 1 ? "hours" : "hour"}, ` : ""}
@@ -93,8 +95,6 @@ export function timeRender(
     default:
       return +days > 0
         ? `${days} Days, ${hours}:${minutes}:${seconds}`
-        : +hours > 0
-          ? `${minutes}:${seconds}`
         : `${hours}:${minutes}:${seconds}`;
   }
 }

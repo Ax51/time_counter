@@ -25,7 +25,13 @@ export default function Statistics() {
       <CardHeader
         title={
           <>
-            Statistics
+            {runningTask ? (
+              <>
+                Running task: <strong>{runningTask.name}</strong>
+              </>
+            ) : (
+              "Statistics"
+            )}
             <Divider sx={{ mt: 1 }} />
           </>
         }
@@ -51,6 +57,8 @@ export default function Statistics() {
               {runningTask ? "Actual timer" : "Clock"}
             </Typography>
             <AnalogClock trackActiveTask />
+            {/* TODO: last active task controls */}
+            Controls
           </Grid>
           <Grid item xs={4}>
             <Typography variant="h6" textAlign="center">
