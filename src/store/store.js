@@ -1,13 +1,13 @@
 import create from "zustand";
-import { persist } from "zustand/middleware";
-import merge from "deepmerge";
+// import { persist } from "zustand/middleware";
+// import merge from "deepmerge";
 
 import { createNewTask, resumePausedTask, stopRunningTask } from "./storeUtils";
 
 // TODO: add zustand lens to separate stores
 // TODO: split store to the separate stores and export each respectively
 export const useStore = create(
-  persist(
+  // persist( // comment this code because it conflicts with typed store
     (set, get) => ({
       tasks: {
         tasksArr: [],
@@ -179,10 +179,10 @@ export const useStore = create(
         },
       },
     }),
-    {
-      name: "time_counter",
-      merge,
-      version: 0,
-    },
-  ),
+  //   {
+  //     name: "time_counter",
+  //     merge,
+  //     version: 0,
+  //   },
+  // ),
 );

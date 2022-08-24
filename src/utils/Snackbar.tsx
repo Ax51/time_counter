@@ -1,12 +1,16 @@
 import React from "react";
 import { Alert, Snackbar } from "@mui/material";
-import { useStore } from "../store/store";
+import { useSnackbarStore } from "../store/snackbarStore";
 
 export default function App() {
-  const { open, message, severity, button, anchorOrigin } = useStore(
-    (state) => state.snackbar.props,
-  );
-  const handleClose = useStore((state) => state.snackbar.closeSnackbar);
+  const {
+    open,
+    message,
+    severity,
+    button,
+    anchorOrigin,
+    closeSnackbar: handleClose,
+  } = useSnackbarStore((state) => state);
 
   return (
     <Snackbar

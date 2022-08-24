@@ -6,19 +6,64 @@ import {
   Typography,
   Grid,
   Divider,
+  Button,
 } from "@mui/material";
 import AnalogClock from "../ui-components/AnalogClock";
-import { useStore } from "../store";
+import { useTasksStore, useSnackbarStore } from "../store";
 import { relativeToHumanTime, timeRender, useDailyRefresh } from "../utils";
+import { persistStoreName } from "../config";
 
 export default function Statistics() {
-  const runningTask = useStore((store) => store.tasks.runningTask());
-  const todayMsTraced = useStore((store) => store.tasks.getTodayActivity());
+  const runningTask = useTasksStore((store) => store.runningTask());
+  const todayMsTraced = useTasksStore((store) => store.getTodayActivity());
   const todayTracedObj = relativeToHumanTime(todayMsTraced);
-  const weeklyTraced = useStore((store) => store.tasks.getWeekActivity());
+  const weeklyTraced = useTasksStore((store) => store.getWeekActivity());
   const weeklyTracedObj = relativeToHumanTime(weeklyTraced);
 
+  const openSnackbar = useSnackbarStore((store) => store.openSnackbar);
+
   useDailyRefresh();
+
+  // TODO: move this somewhere
+  function downloadHistory() {
+    const link = document.createElement("a");
+    link.download = `${persistStoreName}_history.json`;
+    link.href = `data:text/json;charset=utf-8, ${encodeURIComponent(
+      localStorage.getItem(persistStoreName) ?? "Error was occured",
+    )}`;
+    if (runningTask) {
+      const confirmSave = window.confirm(
+        `Active task found: ${runningTask.name}\nare you sure to save copy with running task?`,
+      );
+      if (confirmSave) {
+        link.click();
+      }
+    } else {
+      link.click();
+    }
+  }
+  function rewriteHistory() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = 'accept="application/JSON"';
+    input.oninput = () => {
+      const file = input.files?.item(0);
+      if (file) {
+        const reader = new FileReader();
+        const pageReload = () => document.location.reload();
+        reader.readAsText(file);
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            localStorage.setItem(persistStoreName, reader.result);
+            pageReload();
+          } else {
+            openSnackbar({ text: "Incorrect file uploaded" });
+          }
+        };
+      }
+    };
+    input.click();
+  }
 
   return (
     <Card sx={{ width: "100%", minHeight: "100px", mb: 2 }}>
@@ -64,7 +109,12 @@ export default function Statistics() {
             <Typography variant="h6" textAlign="center">
               Calendar
             </Typography>
-            56
+            <Button variant="contained" onClick={downloadHistory}>
+              Download history
+            </Button>
+            <Button variant="contained" onClick={rewriteHistory}>
+              Upload history file
+            </Button>
           </Grid>
         </Grid>
       </CardContent>

@@ -21,18 +21,18 @@ import { MdArchive, MdUnarchive, MdDeleteForever } from "react-icons/md";
 import { HiClipboardCheck, HiClipboardList } from "react-icons/hi";
 import useTimer from "../ui-components/useTimer";
 import { relativeToHumanTime, useTimeout, timeRender } from "../utils";
-import { useStore } from "../store/store";
+import { useTasksStore, useSnackbarStore } from "../store";
 
 export default function RenderTask({
   task: { id, name, isActive, isDone, isArchived, periods },
 }) {
-  const pauseTask = useStore((state) => state.tasks.pauseTask);
-  const toggleArchiveTask = useStore((state) => state.tasks.toggleArchiveTask);
-  const renameTask = useStore((state) => state.tasks.renameTask);
-  const toggleDoneTask = useStore((state) => state.tasks.toggleDoneTask);
-  const deleteTask = useStore((state) => state.tasks.deleteTask);
+  const pauseTask = useTasksStore((state) => state.pauseTask);
+  const toggleArchiveTask = useTasksStore((state) => state.toggleArchiveTask);
+  const renameTask = useTasksStore((state) => state.renameTask);
+  const toggleDoneTask = useTasksStore((state) => state.toggleDoneTask);
+  const deleteTask = useTasksStore((state) => state.deleteTask);
 
-  const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
+  const openSnackbar = useSnackbarStore((state) => state.openSnackbar);
 
   const [temporaryName, setTemporaryName] = useState(name);
   const [changeNameMode, setChangeNameMode] = useState(false);

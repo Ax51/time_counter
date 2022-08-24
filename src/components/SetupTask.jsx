@@ -14,17 +14,15 @@ import {
 import {
   BsFillPlayCircleFill /* BsFillPauseCircleFill */,
 } from "react-icons/bs";
-import { useStore } from "../store/store";
+import { useTasksStore, useSnackbarStore } from "../store";
 
 export default function SetupTask() {
-  const runningTask = useStore((store) => store.tasks.runningTask());
-  const addTask = useStore((state) => state.tasks.addTask);
-  const openSnackbar = useStore((state) => state.snackbar.openSnackbar);
   const [inputText, setInputText] = useState("");
-  const isActiveOnly = useStore((state) => state.tasks.showActiveOnly);
-  const toggleActiveOnly = useStore(
-    (state) => state.tasks.toggleShowActiveOnly,
-  );
+  const openSnackbar = useSnackbarStore((state) => state.openSnackbar);
+  const runningTask = useTasksStore((store) => store.runningTask());
+  const addTask = useTasksStore((state) => state.addTask);
+  const isActiveOnly = useTasksStore((state) => state.showActiveOnly);
+  const toggleActiveOnly = useTasksStore((state) => state.toggleShowActiveOnly);
 
   function resetInput() {
     setInputText("");

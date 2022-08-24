@@ -1,4 +1,6 @@
 {
+  "parser": "@typescript-eslint/parser",
+  "root": true,
   "env": {
     "browser": true,
     "es2021": true
@@ -8,7 +10,10 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "airbnb",
-    "prettier"
+    "prettier",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -17,8 +22,19 @@
     "ecmaVersion": 2022,
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "react/jsx-filename-extension": [1, { "extensions": [".jsx", "tsx"] }],
     "import/prefer-default-export": "off",
     "no-plusplus": "off",
     "radix": "off",
@@ -31,7 +47,8 @@
     "no-nested-ternary": "off",
     "react/jsx-no-useless-fragment": ["error", { "allowExpressions": true }],
     "no-empty": "off",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "react/no-array-index-key": "off",
     "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
     "jsx-a11y/click-events-have-key-events": "off",

@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
+import { Task, suggestedTask } from "./types";
 
-export const taskInitialState = {
+export const taskInitialState: Task = {
   id: String(),
   name: String(),
   timestamp: Date.now(),
@@ -13,7 +14,7 @@ export const taskInitialState = {
   ],
 };
 
-export function checkNewTaskPropertiesUtil(newTask, initialTask) {
+export function checkNewTaskPropertiesUtil(newTask: Task, initialTask: Task) {
   const newTaskAttrs = Object.keys(newTask);
   const initialTaskAttrs = Object.keys(initialTask);
 
@@ -34,7 +35,7 @@ export function checkNewTaskPropertiesUtil(newTask, initialTask) {
   return true;
 }
 
-export function stopRunningTask(task) {
+export function stopRunningTask(task: Task) {
   const { periods } = task;
   const lastStartTime = periods[periods.length - 1].startTime;
   const timeLeft = Date.now() - lastStartTime;
@@ -47,23 +48,23 @@ export function stopRunningTask(task) {
     periods:
       isMoreThanMinute || periods.length < 2
         ? [
-          ...periods.slice(0, -1),
-          {
-            startTime: lastStartTime,
-            endTime: Date.now(),
-          },
-        ]
+            ...periods.slice(0, -1),
+            {
+              startTime: lastStartTime,
+              endTime: Date.now(),
+            },
+          ]
         : [
-          ...periods.slice(0, -2),
-          {
-            startTime: periods[periods.length - 2].startTime,
-            endTime: periods[periods.length - 2].endTime + timeLeft,
-          },
-        ],
+            ...periods.slice(0, -2),
+            {
+              startTime: periods[periods.length - 2].startTime,
+              endTime: periods[periods.length - 2].endTime ?? 0 + timeLeft,
+            },
+          ],
   };
 }
 
-export function resumePausedTask(task) {
+export function resumePausedTask(task: Task) {
   return {
     ...task,
     isDone: false,
@@ -73,7 +74,7 @@ export function resumePausedTask(task) {
   };
 }
 
-export function createNewTask(givenData) {
+export function createNewTask(givenData: suggestedTask) {
   // to use timestamp below twice, we need to create separate constant
   const timestamp = givenData.timestamp ?? taskInitialState.timestamp;
   const newTask = {
@@ -81,7 +82,7 @@ export function createNewTask(givenData) {
     name: givenData.name ?? taskInitialState.name,
     timestamp,
     isActive: givenData.isActive ?? taskInitialState.isActive,
-    isDone: taskInitialState.isDone,
+    isDone: false,
     isArchived: taskInitialState.isArchived,
     periods: [{ startTime: timestamp, endTime: null }],
   };

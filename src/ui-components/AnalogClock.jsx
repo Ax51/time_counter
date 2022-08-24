@@ -12,11 +12,11 @@ import {
   MinuteHand,
   SecondHand,
 } from "./AnalogClockComponents";
-import { useStore } from "../store";
+import { useTasksStore } from "../store";
 import { useInterval, relativeToHumanTime } from "../utils";
 
 export default function AnalogClock({ trackActiveTask = false }) {
-  const runningTask = useStore((store) => store.tasks.runningTask());
+  const runningTask = useTasksStore((store) => store.runningTask());
 
   const clockMode = !trackActiveTask || !runningTask;
   const [{ hourDeg, minuteDeg, secondDeg }, setHandsDeg] = useState({
