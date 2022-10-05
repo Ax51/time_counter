@@ -22,9 +22,12 @@ import { HiClipboardCheck, HiClipboardList } from "react-icons/hi";
 import useTimer from "../ui-components/useTimer";
 import { relativeToHumanTime, useTimeout, timeRender } from "../utils";
 import { useTasksStore, useSnackbarStore } from "../store";
+import { Task } from "../store/types";
 
 export default function RenderTask({
   task: { id, name, isActive, isDone, isArchived, periods },
+}: {
+  task: Task;
 }) {
   const pauseTask = useTasksStore((state) => state.pauseTask);
   const toggleArchiveTask = useTasksStore((state) => state.toggleArchiveTask);
@@ -39,14 +42,14 @@ export default function RenderTask({
   const [isRenderLast, setIsRenderLast] = useState(true);
   const [showWarnSnackbar, setShowWarnSnackbar] = useState(false);
 
-  const scrollRef = useRef();
+  const scrollRef = useRef<HTMLBaseElement>();
 
   const { startTime: ms, endTime: lastTimeActive } =
     periods[periods.length - 1];
 
   const totalSpent = periods
     .filter((i) => i.endTime)
-    .map((i) => i.endTime - i.startTime)
+    .map((i) => (i.endTime ? i.endTime - i.startTime : 0))
     .reduce((prev, cur) => prev + cur, 0);
 
   function saveNewName() {
@@ -54,7 +57,7 @@ export default function RenderTask({
     setChangeNameMode(false);
   }
 
-  function handleEnter(e) {
+  function handleEnter(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
       saveNewName();
     }
@@ -71,7 +74,7 @@ export default function RenderTask({
     setShowWarnSnackbar(true);
   }
 
-  function handleDeleteTask(e) {
+  function handleDeleteTask(e: React.MouseEvent) {
     if (e.shiftKey) {
       setShowWarnSnackbar(false);
       deleteTask(id);
@@ -103,7 +106,9 @@ export default function RenderTask({
           {changeNameMode ? (
             <Input
               value={temporaryName}
-              onInput={(e) => setTemporaryName(e.target.value)}
+              onInput={({ target: { value } }: React.BaseSyntheticEvent) =>
+                setTemporaryName(value)
+              }
               onKeyDown={handleEnter}
               onBlur={saveNewName}
               autoFocus
@@ -126,7 +131,7 @@ export default function RenderTask({
           )}
           <Grid container alignItems="center" flexWrap="nowrap">
             <Grid>
-              <Typography sx={{ color: !isActive && "text.disabled" }}>
+              <Typography sx={!isActive ? { color: "text.disabled" } : {}}>
                 {/* {isActive && (isRenderLast ? "Active: " : "Total: ")} */}
                 {isActive && (
                   <IconButton color="primary" onClick={toggleShownTime}>
@@ -166,7 +171,7 @@ export default function RenderTask({
             {periods
               .filter((i) => i.endTime)
               .map(({ startTime, endTime }, k) => {
-                const relativeTimeSpent = endTime - startTime;
+                const relativeTimeSpent = endTime ? endTime - startTime : 0;
                 const timeData = relativeToHumanTime(relativeTimeSpent);
                 return (
                   <Typography key={startTime}>

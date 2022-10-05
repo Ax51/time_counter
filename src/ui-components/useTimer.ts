@@ -1,5 +1,6 @@
 import { useRef, useReducer, useEffect } from "react";
 import { relativeToHumanTime, timeRender } from "../utils";
+import { Timer } from "../store/types";
 
 export default function useTimer({
   ms,
@@ -7,14 +8,14 @@ export default function useTimer({
   isActive,
   lastTimeActive,
   variant,
-}) {
+}: Timer) {
   const msTimeLeft = lastTimeActive ? lastTimeActive - ms : Date.now() - ms;
   const { days, hours, minutes, seconds } = relativeToHumanTime(msTimeLeft);
   const forceUpdate = useReducer((state) => !state, true)[1];
-  const timerIdRef = useRef(null);
+  const timerIdRef = useRef<number>();
   const titleStoreRef = useRef(document.title);
 
-  function changeTitle(newTitle) {
+  function changeTitle(newTitle?: string) {
     if (newTitle) {
       document.title = newTitle;
     } else {

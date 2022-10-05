@@ -3,6 +3,13 @@ export interface Period {
   endTime: null | number;
 }
 
+// export interface Note {
+//   id: string,
+//   timestamp: number,
+//   name?: string,
+//   description: string,
+// }
+
 export interface Task {
   id: string;
   name: string;
@@ -11,16 +18,14 @@ export interface Task {
   isDone: boolean;
   isArchived: boolean;
   periods: Period[];
+  // TODO: make futher logic
+  // notes: Note[],
+  // timeSpent: number, // total time spent. for not calcing each time for every period. just add to this
+  // timeAdditions: number[], // addition in ms
 }
 
-export interface suggestedTask {
-  id?: string;
+export interface suggestedTask extends Partial<Task> {
   name: string;
-  timestamp?: number;
-  isActive?: boolean;
-  isDone: false;
-  isArchived: false;
-  periods: [Period];
 }
 
 export interface Store {

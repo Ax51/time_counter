@@ -1,4 +1,6 @@
-export function toHumanTime(timestamp) {
+import { TimeFormat } from "../store/types";
+
+export function toHumanTime(timestamp: number) {
   const dt = new Date(timestamp);
   const seconds =
     dt.getSeconds() > 9 ? `${dt.getSeconds()}` : `0${dt.getSeconds()}`;
@@ -9,7 +11,7 @@ export function toHumanTime(timestamp) {
   const month =
     dt.getMonth() > 9 ? `${dt.getMonth() + 1}` : `0${dt.getMonth() + 1}`;
   const year =
-    dt.getYear() > 9 ? `${dt.getFullYear()}` : `0${dt.getFullYear()}`;
+    dt.getFullYear() > 2009 ? `${dt.getFullYear()}` : `0${dt.getFullYear()}`;
 
   return {
     year,
@@ -46,14 +48,14 @@ export function humanToMs({ days = 0, hours = 0, minutes = 0, seconds = 0 }) {
   );
 }
 
-export function relativeToHumanTime(ms) {
+export function relativeToHumanTime(ms: number) {
   const days = Math.floor(ms / stringToMs.day);
   const hours = Math.floor((ms % stringToMs.day) / stringToMs.hour);
   const minutes = Math.floor((ms % stringToMs.hour) / stringToMs.minute);
   const seconds = Math.floor((ms % stringToMs.minute) / stringToMs.second);
 
-  function addZero(num) {
-    return +num === 0 ? "00" : +num > 9 ? num.toString() : `0${num}`;
+  function addZero(num: number) {
+    return num === 0 ? "00" : num > 9 ? num.toString() : `0${num}`;
   }
 
   return {
@@ -64,36 +66,37 @@ export function relativeToHumanTime(ms) {
   };
 }
 
-export function msTimeSpent(ms) {
+export function msTimeSpent(ms: number) {
   return Date.now() - ms;
 }
 
 export function timeRender(
-  { days, hours, minutes, seconds },
+  { days, hours, minutes, seconds }: TimeFormat,
   variant = "shortStr",
 ) {
   switch (variant) {
     case "titleStr":
-      return +hours ? `${hours}:${minutes}` : `${minutes}:${seconds}`;
+      return hours ? `${hours}:${minutes}` : `${minutes}:${seconds}`;
     case "fullStr":
-      return `${+days ? `${days} Days, ` : ""}
-      ${+hours ? `${hours} hr, ` : ""}
-      ${+minutes ? `${minutes} min, ` : ""}
-      ${+seconds ? `${seconds} sec` : ""}`;
+      return `${days && +days ? ` ${days} Days, ` : ""}
+      ${hours && +hours ? `${hours} hr, ` : ""}
+      ${`${minutes} min, `}
+      ${`${seconds} sec`}`;
     case "daysToHours":
-      const totalHours = +days * 24 + +hours;
-      return `${totalHours} ${totalHours > 1 ? "hours" : "hour"
-        } and ${minutes} ${+minutes === 1 ? "minutes" : "minute"}`;
+      const totalHours = (days ? +days : 0) * 24 + (hours ? +hours : 0);
+      return `${totalHours} ${
+        totalHours > 1 ? "hours" : "hour"
+      } and ${minutes} ${+minutes === 1 ? "minutes" : "minute"}`;
     case "extendStr":
-      return `${+days ? `${days} Days, ` : ""}
-      ${+hours ? `${+hours} ${hours > 1 ? "hours" : "hour"}, ` : ""}
+      return `${days ? `${days} Days, ` : ""}
+      ${hours ? `${hours} ${+hours > 1 ? "hours" : "hour"}, ` : ""}
       ${
-        +minutes ? `${+minutes} ${minutes > 1 ? "minutes" : "minute"} and ` : ""
+        minutes ? `${+minutes} ${+minutes > 1 ? "minutes" : "minute"} and ` : ""
       }
-      ${+seconds ? `${+seconds} ${seconds > 1 ? "seconds" : "second"}` : ""}`;
+      ${+seconds ? `${+seconds} ${+seconds > 1 ? "seconds" : "second"}` : ""}`;
     case "shortStr":
     default:
-      return +days > 0
+      return days
         ? `${days} Days, ${hours}:${minutes}:${seconds}`
         : `${hours}:${minutes}:${seconds}`;
   }

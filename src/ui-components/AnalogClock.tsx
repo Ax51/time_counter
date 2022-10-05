@@ -26,7 +26,7 @@ export default function AnalogClock({ trackActiveTask = false }) {
   });
 
   const calcHandsDeg = useCallback(
-    (hour, mins, secs) => ({
+    (hour: number, mins: number, secs: number) => ({
       hourDeg: (hour / 12) * 360 + (mins / 60) * 30 + 90,
       minuteDeg: (mins / 60) * 360 + (secs / 60) * 6 + 90,
       secondDeg: (secs / 60) * 360 + 90,
@@ -47,7 +47,7 @@ export default function AnalogClock({ trackActiveTask = false }) {
         Date.now() -
         runningTask.periods[runningTask.periods.length - 1].startTime;
       const { hours, minutes, seconds } = relativeToHumanTime(spent);
-      setHandsDeg(calcHandsDeg(hours, minutes, seconds));
+      setHandsDeg(calcHandsDeg(+hours, +minutes, +seconds));
     }
   }, [clockMode, calcHandsDeg, runningTask?.periods]);
 
@@ -61,12 +61,12 @@ export default function AnalogClock({ trackActiveTask = false }) {
         size={200}
         sx={clockMode ? { bgcolor: "#a8f2e0", borderColor: "#dcdcdc" } : null}
       >
-        <OuterClockFace sx={clockMode && { bgcolor: "#f5f5f5" }}>
+        <OuterClockFace sx={clockMode ? { bgcolor: "#f5f5f5" } : {}}>
           <MarkOne />
           <MarkTwo />
           <MarkThree />
           <MarkFour />
-          <InnerClockFace sx={clockMode && { bgcolor: "#f5f5f5" }}>
+          <InnerClockFace sx={clockMode ? { bgcolor: "#f5f5f5" } : {}}>
             <HourHand sx={{ transform: `rotate(${hourDeg}deg)` }} />
             <MinuteHand sx={{ transform: `rotate(${minuteDeg}deg)` }} />
             <SecondHand sx={{ transform: `rotate(${secondDeg}deg)` }} />

@@ -2,7 +2,7 @@ import { styled } from "@mui/material";
 
 export const Clock = styled("div", {
   shouldForwardProp: (prop) => prop !== "size" && prop !== "sx",
-})(({ size, theme }) => ({
+})<{ size: number }>(({ size, theme }) => ({
   width: size ?? 150,
   aspectRatio: "1",
   border: "7px solid #282828",
@@ -50,19 +50,19 @@ export const markingStyles = {
 };
 
 export const MarkOne = styled("div")({
-  ...markingStyles,
+  ...(markingStyles as Record<string, unknown>),
   transform: "rotate(30deg)",
 });
 export const MarkTwo = styled("div")({
-  ...markingStyles,
+  ...(markingStyles as Record<string, unknown>),
   transform: "rotate(60deg)",
 });
 export const MarkThree = styled("div")({
-  ...markingStyles,
+  ...(markingStyles as Record<string, unknown>),
   transform: "rotate(120deg)",
 });
 export const MarkFour = styled("div")({
-  ...markingStyles,
+  ...(markingStyles as Record<string, unknown>),
   transform: "rotate(150deg)",
 });
 
@@ -104,18 +104,18 @@ export const handStyles = {
 };
 
 export const HourHand = styled("div")({
-  ...handStyles,
+  ...(handStyles as Record<string, unknown>),
   width: "30%",
   zIndex: 3,
 });
 export const MinuteHand = styled("div")({
-  ...handStyles,
+  ...(handStyles as Record<string, unknown>),
   height: "3px",
   zIndex: 10,
   width: "40%",
 });
 export const SecondHand = styled("div")({
-  ...handStyles,
+  ...(handStyles as Record<string, unknown>),
   background: "#ee791a",
   width: "45%",
   height: "2px",

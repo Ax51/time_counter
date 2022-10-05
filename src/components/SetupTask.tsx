@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { useTheme } from "@mui/material/styles";
 import {
   Grid,
   Box,
@@ -11,10 +10,9 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import {
-  BsFillPlayCircleFill /* BsFillPauseCircleFill */,
-} from "react-icons/bs";
+import { BsFillPlayCircleFill } from "react-icons/bs";
 import { useTasksStore, useSnackbarStore } from "../store";
+import { createNewTask } from "../store/storeUtils";
 
 export default function SetupTask() {
   const [inputText, setInputText] = useState("");
@@ -27,24 +25,20 @@ export default function SetupTask() {
   function resetInput() {
     setInputText("");
   }
-  function handleInput(e) {
+  function handleInput(e: React.BaseSyntheticEvent) {
     setInputText(e.target.value);
   }
 
   function handleStart() {
     if (inputText) {
-      addTask({
-        name: inputText,
-        timestamp: Date.now(),
-        isActive: true,
-      });
+      addTask(createNewTask({ name: inputText }));
       resetInput();
       openSnackbar({ text: "Task started successfully" });
     } else {
     }
   }
 
-  function handleEnterStart(e) {
+  function handleEnterStart(e: React.KeyboardEvent) {
     if (e.key === "Enter") {
       handleStart();
     }
