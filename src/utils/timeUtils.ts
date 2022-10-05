@@ -78,7 +78,9 @@ export function timeRender(
     case "titleStr":
       return hours ? `${hours}:${minutes}` : `${minutes}:${seconds}`;
     case "fullStr":
-      return `${days && +days ? ` ${days} Days, ` : ""}
+      return `${
+        days && +days ? (+days > 1 ? ` ${days} Days, ` : ` ${days} Day, `) : ""
+      }
       ${hours && +hours ? `${hours} hr, ` : ""}
       ${`${minutes} min, `}
       ${`${seconds} sec`}`;
@@ -88,16 +90,18 @@ export function timeRender(
         totalHours > 1 ? "hours" : "hour"
       } and ${minutes} ${+minutes === 1 ? "minutes" : "minute"}`;
     case "extendStr":
-      return `${days ? `${days} Days, ` : ""}
-      ${hours ? `${hours} ${+hours > 1 ? "hours" : "hour"}, ` : ""}
+      return `${days && +days ? `${days} Days, ` : ""}
+      ${hours && +hours ? `${hours} ${+hours > 1 ? "hours" : "hour"}, ` : ""}
       ${
         minutes ? `${+minutes} ${+minutes > 1 ? "minutes" : "minute"} and ` : ""
       }
       ${+seconds ? `${+seconds} ${+seconds > 1 ? "seconds" : "second"}` : ""}`;
     case "shortStr":
     default:
-      return days
-        ? `${days} Days, ${hours}:${minutes}:${seconds}`
+      return days && +days
+        ? +days > 1
+          ? `${days} Days, ${hours}:${minutes}:${seconds}`
+          : `${days} Day, ${hours}:${minutes}:${seconds}`
         : `${hours}:${minutes}:${seconds}`;
   }
 }
