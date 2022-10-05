@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "vite",
     "start": "vite",
-    "lint": "eslint src/**/*.{js,jsx,ts,tsx} --rule 'no-warning-comments: \"off\"'",
-    "lint:notes": "eslint src/**/*.{js,jsx,ts,tsx}",
-    "lint:fix": "eslint src/**/*.{js,jsx,ts,tsx} --fix",
+    "lint": "eslint src/**/*.{ts,tsx} --rule 'no-warning-comments: \"off\"'",
+    "lint:notes": "eslint src/**/*.{ts,tsx}",
+    "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
     "build": "vite build",
     "preview": "vite preview"
   },
