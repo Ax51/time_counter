@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import {
   Box,
   Grid,
@@ -38,6 +38,8 @@ export default function RenderTask({
   const [changeNameMode, setChangeNameMode] = useState(false);
   const [isRenderLast, setIsRenderLast] = useState(true);
   const [showWarnSnackbar, setShowWarnSnackbar] = useState(false);
+
+  const scrollRef = useRef();
 
   const { startTime: ms, endTime: lastTimeActive } =
     periods[periods.length - 1];
@@ -89,6 +91,10 @@ export default function RenderTask({
     },
     showWarnSnackbar ? 1000 : null,
   );
+
+  useLayoutEffect(() => {
+    scrollRef.current?.scrollTo(0, scrollRef.current?.scrollHeight);
+  }, [periods]);
 
   return (
     <Grid item xs={4}>
@@ -156,19 +162,20 @@ export default function RenderTask({
               </IconButton>
             </div>
           </Grid>
-          {periods
-            .filter((i) => i.endTime)
-            .reverse()
-            .map(({ startTime, endTime }, k) => {
-              const relativeTimeSpent = endTime - startTime;
-              const timeData = relativeToHumanTime(relativeTimeSpent);
-              return (
-                <Typography key={startTime}>
-                  {`${k + 1})`}
-                  {timeRender(timeData, "fullStr")}
-                </Typography>
-              );
-            })}
+          <Box ref={scrollRef} sx={{ overflowY: "auto", maxHeight: "120px" }}>
+            {periods
+              .filter((i) => i.endTime)
+              .map(({ startTime, endTime }, k) => {
+                const relativeTimeSpent = endTime - startTime;
+                const timeData = relativeToHumanTime(relativeTimeSpent);
+                return (
+                  <Typography key={startTime}>
+                    {`${k + 1})`}
+                    {timeRender(timeData, "fullStr")}
+                  </Typography>
+                );
+              })}
+          </Box>
           {!isActive && (
             <>
               <Divider sx={{ my: 1 }} />
