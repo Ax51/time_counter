@@ -52,6 +52,14 @@ export default function RenderTask({
     .map((i) => (i.endTime ? i.endTime - i.startTime : 0))
     .reduce((prev, cur) => prev + cur, 0);
 
+  const timeToShow = useTimer({
+    ms: isActive ? (isRenderLast ? ms : ms - totalSpent) : ms,
+    name,
+    isActive,
+    lastTimeActive,
+    variant: isActive ? "shortStr" : "fullStr",
+  });
+
   function saveNewName() {
     renameTask(id, temporaryName);
     setChangeNameMode(false);
@@ -138,13 +146,7 @@ export default function RenderTask({
                     {isRenderLast ? <BsClockHistory /> : <BsClock />}
                   </IconButton>
                 )}
-                {useTimer({
-                  ms: isActive ? (isRenderLast ? ms : ms - totalSpent) : ms,
-                  name,
-                  isActive,
-                  lastTimeActive,
-                  variant: isActive ? "shortStr" : "fullStr",
-                })}
+                {timeToShow}
               </Typography>
             </Grid>
             <div>
