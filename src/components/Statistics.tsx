@@ -45,7 +45,7 @@ export default function Statistics() {
   function rewriteHistory() {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = 'accept="application/JSON"';
+    input.accept = "application/JSON,.txt";
     input.oninput = () => {
       const file = input.files?.item(0);
       if (file) {
