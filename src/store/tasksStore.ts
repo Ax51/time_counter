@@ -8,7 +8,7 @@ export const useTasksStore = create<Store>()(
   persist(
     (set, get) => ({
       tasksArr: [],
-      showActiveOnly: false,
+      showActiveOnly: true,
       getTodayActivity: () =>
         get()
           .tasksArr.reduce((a: Period[], b) => {
