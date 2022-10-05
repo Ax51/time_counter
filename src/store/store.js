@@ -1,3 +1,5 @@
+// DANGER: this is an old and unsafe version of the separated stores. use it only for reference
+
 import create from "zustand";
 // import { persist } from "zustand/middleware";
 // import merge from "deepmerge";
