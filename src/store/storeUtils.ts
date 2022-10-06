@@ -1,40 +1,6 @@
 import { nanoid } from "nanoid";
 import { Task, suggestedTask } from "./types";
 
-export const taskInitialState: Task = {
-  id: String(),
-  name: String(),
-  timestamp: Date.now(),
-  isActive: Boolean(),
-  isDone: false,
-  isArchived: Boolean(),
-  periods: [
-    { startTime: Date.now(), endTime: Date.now() },
-    { startTime: Date.now(), endTime: null },
-  ],
-};
-
-export function checkNewTaskPropertiesUtil(newTask: Task, initialTask: Task) {
-  const newTaskAttrs = Object.keys(newTask);
-  const initialTaskAttrs = Object.keys(initialTask);
-
-  const newTaskLen = newTaskAttrs.length;
-  const initialTaskLen = initialTaskAttrs.length;
-
-  const mismatchedProperties = [...newTaskAttrs].filter(
-    (attr) => initialTaskAttrs.indexOf(attr) === -1,
-  );
-
-  if (newTaskLen !== initialTaskLen) {
-    console.error(
-      "Check creatingtask.now properties in store. Mismatch with initial task:",
-      mismatchedProperties,
-    );
-    return false;
-  }
-  return true;
-}
-
 export function stopRunningTask(task: Task) {
   const { periods } = task;
   const lastStartTime = periods[periods.length - 1].startTime;
@@ -58,7 +24,7 @@ export function stopRunningTask(task: Task) {
             ...periods.slice(0, -2),
             {
               startTime: periods[periods.length - 2].startTime,
-              endTime: periods[periods.length - 2].endTime ?? 0 + timeLeft,
+              endTime: (periods[periods.length - 2].endTime ?? 0) + timeLeft,
             },
           ],
   };
@@ -74,18 +40,24 @@ export function resumePausedTask(task: Task) {
   };
 }
 
-export function createNewTask(givenData: suggestedTask) {
-  // to use timestamp below twice, we need to create separate constant
-  const timestamp = givenData.timestamp ?? taskInitialState.timestamp;
+export function createNewTask({
+  name,
+  timestamp: ms,
+  id,
+  isActive,
+  isArchived,
+  isDone,
+}: suggestedTask) {
+  // NOTE: to use timestamp below twice, we need to create separate constant
+  const timestamp = ms ?? Date.now();
   const newTask = {
-    id: givenData.id ?? nanoid(10),
-    name: givenData.name ?? taskInitialState.name,
+    id: id ?? nanoid(10),
+    name,
     timestamp,
-    isActive: givenData.isActive ?? taskInitialState.isActive,
-    isDone: false,
-    isArchived: taskInitialState.isArchived,
+    isActive: isActive ?? false,
+    isDone: isDone ?? false,
+    isArchived: isArchived ?? false,
     periods: [{ startTime: timestamp, endTime: null }],
   };
-  checkNewTaskPropertiesUtil(newTask, taskInitialState);
   return newTask;
 }
