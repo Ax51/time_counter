@@ -31,7 +31,7 @@ export default function SetupTask() {
 
   function handleStart() {
     if (inputText) {
-      addTask(createNewTask({ name: inputText }));
+      addTask(createNewTask({ name: inputText, isActive: true }));
       resetInput();
       openSnackbar({ text: "Task started successfully" });
     } else {
