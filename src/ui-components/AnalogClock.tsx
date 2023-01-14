@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { Grid } from "@mui/material";
 import {
   Clock,
@@ -15,10 +15,133 @@ import {
 import { useTasksStore } from "../store";
 import { useInterval, relativeToHumanTime } from "../utils";
 
-export default function AnalogClock({ trackActiveTask = false }) {
-  const runningTask = useTasksStore((store) => store.runningTask());
+type RGB = `rgb(${number}, ${number}, ${number})`;
+type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
+type HEX = `#${string}`;
 
+type TColor = RGB | RGBA | HEX;
+
+type TClockColor = {
+  hands:
+    | TColor
+    | {
+        second: TColor;
+        minute: TColor;
+        hour: TColor;
+      };
+  dial: TColor;
+  hours: TColor;
+  minutes: TColor;
+  body: TColor;
+  case: TColor;
+  quarterHours: TColor;
+  escapeWheel: TColor;
+};
+
+type TColorizableElement =
+  | "hourHand"
+  | "minuteHand"
+  | "secondHand"
+  | "dial"
+  | "hours"
+  | "minutes"
+  | "body"
+  | "escapeWheel"
+  | "case"
+  | "quarterHours";
+
+interface IProps {
+  trackActiveTask: boolean;
+  lightTheme?: Partial<TClockColor>;
+  darkTheme?: Partial<TClockColor>;
+}
+
+const timerTheme: TClockColor = {
+  hands: {
+    hour: "#61afff",
+    minute: "#61afff",
+    second: "#ee791a",
+  },
+  dial: "#4d4b63",
+  hours: "#bdbdcb",
+  minutes: "#a8f2e0",
+  body: "#282828",
+  escapeWheel: "#282828",
+  case: "#282828",
+  quarterHours: "#1df52f",
+};
+
+const clockTheme: TClockColor = {
+  hands: {
+    hour: "#61afff",
+    minute: "#61afff",
+    second: "#ee791a",
+  },
+  dial: "#4d4b63",
+  hours: "#bdbdcb",
+  minutes: "#a8f2e0",
+  body: "#f5f5f5",
+  escapeWheel: "#f5f5f5",
+  case: "#dcdcdc",
+  quarterHours: "#1df52f",
+};
+
+const useColor = (
+  defaultTheme: TClockColor,
+  customTheme?: Partial<TClockColor>,
+) =>
+  useCallback(
+    (prop: TColorizableElement): TColor => {
+      if (
+        prop === "hourHand" ||
+        prop === "minuteHand" ||
+        prop === "secondHand"
+      ) {
+        if (typeof customTheme?.hands === "string") {
+          return customTheme.hands;
+        }
+        const key = prop.replace("Hand", "") as "hour" | "minute" | "second";
+        if (typeof customTheme?.hands === "object") {
+          return customTheme.hands[key];
+        }
+        if (typeof defaultTheme.hands === "object") {
+          return defaultTheme.hands[key];
+        }
+        return defaultTheme.hands;
+      }
+      return customTheme?.[prop] ?? defaultTheme[prop];
+    },
+    [customTheme, defaultTheme],
+  );
+
+export default function AnalogClock({
+  trackActiveTask = false,
+  lightTheme,
+  darkTheme,
+}: IProps) {
+  const runningTask = useTasksStore((store) => store.runningTask());
   const clockMode = !trackActiveTask || !runningTask;
+
+  const defaultTheme = clockMode ? clockTheme : timerTheme;
+  const customTheme = clockMode ? lightTheme : darkTheme;
+  const colorize = useColor(defaultTheme, customTheme);
+
+  const colors = useMemo(
+    () => ({
+      hourHand: colorize("hourHand"),
+      minuteHand: colorize("minuteHand"),
+      secondHand: colorize("secondHand"),
+      dial: colorize("dial"),
+      hours: colorize("hours"),
+      minutes: colorize("minutes"),
+      body: colorize("body"),
+      case: colorize("case"),
+      quarterHours: colorize("quarterHours"),
+      escapeWheel: colorize("escapeWheel"),
+    } satisfies Record<TColorizableElement, string>),
+    [colorize],
+  );
+
   const [{ hourDeg, minuteDeg, secondDeg }, setHandsDeg] = useState({
     hourDeg: 0,
     minuteDeg: 0,
@@ -59,17 +182,30 @@ export default function AnalogClock({ trackActiveTask = false }) {
     <Grid container justifyContent="center" alignItems="center">
       <Clock
         size={200}
-        sx={clockMode ? { bgcolor: "#a8f2e0", borderColor: "#dcdcdc" } : null}
+        color={colors.case}
+        minutesColor={colors.minutes}
       >
-        <OuterClockFace sx={clockMode ? { bgcolor: "#f5f5f5" } : {}}>
-          <MarkOne />
-          <MarkTwo />
-          <MarkThree />
-          <MarkFour />
-          <InnerClockFace sx={clockMode ? { bgcolor: "#f5f5f5" } : {}}>
-            <HourHand sx={{ transform: `rotate(${hourDeg}deg)` }} />
-            <MinuteHand sx={{ transform: `rotate(${minuteDeg}deg)` }} />
-            <SecondHand sx={{ transform: `rotate(${secondDeg}deg)` }} />
+        <OuterClockFace 
+        color={colors.escapeWheel} hourColor={colors.quarterHours} 
+        >
+          <MarkOne color={colors.hours} />
+          <MarkTwo  color={colors.hours}/>
+          <MarkThree color={colors.hours} />
+          <MarkFour color={colors.hours} />
+          <InnerClockFace color={colors.body} dialColor={colors.dial} 
+          >
+            <HourHand
+              color={colors.hourHand}
+              sx={{ transform: `rotate(${hourDeg}deg)` }}
+            />
+            <MinuteHand
+              color={colors.minuteHand}
+              sx={{ transform: `rotate(${minuteDeg}deg)` }}
+            />
+            <SecondHand
+              color={colors.secondHand}
+              sx={{ transform: `rotate(${secondDeg}deg)` }}
+            />
           </InnerClockFace>
         </OuterClockFace>
       </Clock>

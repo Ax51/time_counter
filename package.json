@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "start": "vite",
-    "lint": "eslint src/**/*.{ts,tsx} --rule 'no-warning-comments: \"off\"'",
+    "lint": "echo 'Eslint check' && eslint '**/*.ts' --rule 'no-warning-comments: \"off\"' && echo 'TypeScript check' && tsc --noEmit",
     "lint:notes": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
     "build": "vite build",
