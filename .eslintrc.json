@@ -12,6 +12,7 @@
     "airbnb",
     "prettier",
     "eslint:recommended",
+    "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript"
   ],
@@ -46,6 +47,7 @@
     "no-case-declarations": "off",
     "no-nested-ternary": "off",
     "react/jsx-no-useless-fragment": ["error", { "allowExpressions": true }],
+    "react/require-default-props": "off",
     "no-empty": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],

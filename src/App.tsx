@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, ThemeProvider, CssBaseline } from "@mui/material";
 import SetupTask from "./components/SetupTask";
 import Statistics from "./components/Statistics";

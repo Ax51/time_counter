@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardHeader,
@@ -27,7 +26,7 @@ export default function Statistics() {
   // TODO: move this somewhere
   function downloadHistory() {
     const link = document.createElement("a");
-    link.download = `${persistStoreName}_history.json`;
+    link.download = `${persistStoreName}_history_${new Date().toLocaleDateString()}.json`;
     link.href = `data:text/json;charset=utf-8, ${encodeURIComponent(
       localStorage.getItem(persistStoreName) ?? "Error was occured",
     )}`;

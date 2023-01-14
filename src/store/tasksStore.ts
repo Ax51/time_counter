@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { stopRunningTask, resumePausedTask, createNewTask } from "./storeUtils";
 import { Period, Store } from "./types";
